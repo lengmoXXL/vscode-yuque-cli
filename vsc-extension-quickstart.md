@@ -28,6 +28,17 @@
 
 ## Run tests
 
+* set up `testconfig.json`
+
+  edit the file `testconfig.json` in the root directory of the project
+  ```
+  {
+      "yuque": {
+          "token": "<put your token here>"
+      }
+  }
+  ```
+
 * Open the debug viewlet (`Ctrl+Shift+D` or `Cmd+Shift+D` on Mac) and from the launch configuration dropdown pick `Extension Tests`.
 * Press `F5` to run the tests in a new window with your extension loaded.
 * See the output of the test result in the debug console.
