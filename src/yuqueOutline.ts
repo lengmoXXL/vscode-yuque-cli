@@ -6,6 +6,7 @@ import { assert } from 'console';
 
 export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
 
+    private repoNamespace: string;
     private documentNodes: any;
     private documentRelations: any;
     private documentRootNodes: string[];
@@ -20,6 +21,11 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
             if (uuid in this.documentRelations) {
                 ret.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
             }
+            ret.command = {
+                command: 'yuqueCli.fetchDocument',
+                title: '',
+                arguments: [this.repoNamespace, ret.id]
+            };
             return ret;
         }
 
@@ -43,7 +49,9 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
         let tocPath = path.join(folders[0].uri.fsPath, 'TOC.yaml');
         const items: {
             type: string, // 'META', 'DOC', 
+            namespace?: string,
             title?:string,
+            id?: string,
             uuid?: string,
             child_uuid?: string,
             parent_uuid?: string
@@ -52,9 +60,14 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
         this.documentNodes = {};
         this.documentRelations = {};
         this.documentRootNodes = [];
+
+        assert(items !== null);
+        console.log(items);
+
         for (let i = 0; i < items.length; ++ i) {
             let item = items[i];
             if (item.type === 'META') {
+                this.repoNamespace = item.namespace;
                 continue;
             }
 
@@ -64,7 +77,8 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
 
             this.documentNodes[item.uuid] = {
                 label: item.title,
-                iconPath: this.icon()
+                iconPath: this.icon(),
+                id: item.id
             };
 
             if (item.parent_uuid.length === 0) {
@@ -77,6 +91,10 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<string> {
                 this.documentRelations[item.parent_uuid].push(item.uuid);
             }
         }
+    }
+
+    namespace(): string {
+        return this.repoNamespace;
     }
 
     private icon(): any {

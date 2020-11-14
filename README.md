@@ -4,8 +4,10 @@ This is the README for your extension "vscode-yuque-cli". After writing up a bri
 
 ## Features
 
-* tree view of repo
-* clone a yuque repo
+* [x] Yuque Clone Command: Clone a yuque repo into a TOC.yaml
+* [x] Yuque Outline View: Visualize TOC.yaml into a tree view
+* [ ] Yuque Create Document Command: Create a document and place it in the workspace
+* Download markdown file when click on the item of tree view
 * commit update (only support markdown)
 * publish a document
 * view document on website
