@@ -2,9 +2,15 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { SDKClient } from './util';
-import {yuqueClone, yuqueFetchDocument} from './yuque';
+import {yuqueClone} from './yuque';
 import { YuqueOutlineProvider } from './yuqueOutline';
 import { DocumentNode } from './documentNode';
+import * as open from 'open';
+import * as open_darwin from 'mac-open';
+
+// decide what os should be used
+// possible node values 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
+const platform = process.platform;
 
 export class YuqueController {
     private _lastIDClicked: DocumentNode | undefined;
@@ -51,19 +57,29 @@ export class YuqueController {
     }
 
     async createDocument() {
-        let namespace = this._yuqueOutlineProvider.namespace();
-        SDKClient.docs.create({
-            namespace: namespace,
-            data: {
-                title: "<Put Your Title Here>",
-                slug: "owly",
-                public: 1,
-                format: "markdown",
-                body: "<Put Your Body Here>"
+        let title = await vscode.window.showInputBox({prompt: "Put Your Title Here"});
+        if (title) {
+            let namespace = this._yuqueOutlineProvider.namespace();
+            let res = await SDKClient.docs.create({
+                namespace: namespace,
+                data: {
+                    title: title,
+                    public: 1,
+                    format: "markdown",
+                    body: "<Put Your Body Here>"
+                }
+            });
+            if (res) {
+                await vscode.window.showInformationMessage('Create Success, Please insert the document into the TOC');
+                let url = `https://www.yuque.com/${this._yuqueOutlineProvider.namespace()}/toc`;
+                if (platform === 'darwin') {
+                    open_darwin(url);
+                }
+                else {
+                    open(url);
+                }
             }
-        });
-        const res = await SDKClient.repos.getTOC({namespace: namespace});
-        console.log(res);
+        }
     }
 
     async updateDocument() {

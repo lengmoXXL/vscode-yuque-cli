@@ -93,6 +93,8 @@
 		"@yuque/sdk": "^1.1.1",
 		"jsonfile": "^6.1.0",
 		"jsonc-parser": "^0.4.2",
-		"js-yaml": "^3.14.0"
+		"js-yaml": "^3.14.0",
+		"open": "^7.3.0",
+		"mac-open": "^0.1.3"
 	}
 }
