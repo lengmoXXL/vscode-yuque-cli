@@ -37,13 +37,7 @@ export async function yuqueClone() {
         }
 
         console.log(repoInfo.toc_yml);
-        fs.writeFile(tocPath, yaml.safeDump(tocVal), {}, function(err) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('success');
-            }
-        });
+        fs.writeFileSync(tocPath, yaml.safeDump(tocVal), {});
     }
     console.log(vscode.workspace.workspaceFolders);
 }
@@ -60,20 +54,38 @@ export async function yuqueFetchDocument(namespace: string, id: number) {
     }
 }
 
-// export async function yuqueCreateDocument(namespace: string) {
-    // SDKClient.docs.create({
-    //     namespace: namespace,
-    //     data: {
-    //         title: "<Put Your Title Here>",
-    //         slug: "owly",
-    //         public: 1,
-    //         format: "markdown",
-    //         body: "<Put Your Body Here>"
-    //     }
-    // });
-//     const res = await SDKClient.repos.getTOC({namespace: namespace});
-//     console.log(res);
-// }
+export async function yuqueUpdateDocument(namespace: string, id: number) {
+    console.log(namespace, id);
+
+    let folders = vscode.workspace.workspaceFolders;
+    if (folders.length === 1) {
+        let docPath = path.join(folders[0].uri.fsPath, id.toString() + '.md');
+        const documentBody = fs.readFileSync(docPath, 'utf-8');
+        SDKClient.docs.update({
+            namespace: namespace,
+            id: id,
+            data: {
+                body: documentBody
+            }
+        });
+    }
+
+}
+
+export async function yuqueCreateDocument(namespace: string) {
+    SDKClient.docs.create({
+        namespace: namespace,
+        data: {
+            title: "<Put Your Title Here>",
+            slug: "owly",
+            public: 1,
+            format: "markdown",
+            body: "<Put Your Body Here>"
+        }
+    });
+    const res = await SDKClient.repos.getTOC({namespace: namespace});
+    console.log(res);
+}
 
 // export async function yuqueDeleteDocument(namespace: string) {
     // SDKClient.docs.delete({namespace: namespace, id: 15943560});

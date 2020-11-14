@@ -22,6 +22,18 @@
 			{
 				"command": "yuqueCli.reload",
 				"title": "Yuque Reload TOC"
+			},
+			{
+				"command": "yuqueCli.createDocument",
+				"title": "Yuque Create Document"
+			},
+			{
+				"command": "yuqueCli.updateDocument",
+				"title": "Yuque Update Document"
+			},
+			{
+				"command": "yuqueCli.fetchDocument",
+				"title": "Yuque Fetch Document"
 			}
 		],
 		"views": {
@@ -42,7 +54,19 @@
 					}
 				}
 			}
-		]
+		],
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "yuqueCli.updateDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.fetchDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
