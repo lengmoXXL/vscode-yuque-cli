@@ -34,6 +34,18 @@
 			{
 				"command": "yuqueCli.fetchDocument",
 				"title": "Yuque Fetch Document"
+			},
+			{
+				"command": "yuqueCli.openDocument",
+				"title": "Yuque Open Document"
+			},
+			{
+				"command": "yuqueCli.deleteDocument",
+				"title": "Yuque Delete Document"
+			},
+			{
+				"command": "yuqueCli.updateTOC",
+				"title": "Yuque Update TOC"
 			}
 		],
 		"views": {
@@ -64,6 +76,14 @@
 				{
 					"command": "yuqueCli.fetchDocument",
 					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.openDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.deleteDocument",
+					"when": "view == yuqueOutline && viewItem == document"
 				}
 			]
 		}
@@ -92,7 +112,6 @@
 	"dependencies": {
 		"@yuque/sdk": "^1.1.1",
 		"jsonfile": "^6.1.0",
-		"jsonc-parser": "^0.4.2",
 		"js-yaml": "^3.14.0",
 		"open": "^7.3.0",
 		"mac-open": "^0.1.3"

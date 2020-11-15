@@ -17,12 +17,14 @@ export async function yuqueClone() {
             }
         );
     }
-    // console.log(nameOfRepos);
     
     const choice = await vscode.window.showQuickPick(nameOfRepos);
-    console.log('Clone Repo: ' + JSON.stringify(choice));
+    await updateOrCreateTOC(choice.namespace);
+    vscode.window.showInformationMessage(`${choice.name} is saved into TOC.yaml successfully`);
+}
 
-    const repoInfo = await SDKClient.repos.get({namespace: choice.namespace, data: {}});
+export async function updateOrCreateTOC(namespace: string) {
+    const repoInfo = await SDKClient.repos.get({namespace: namespace, data: {}});
     console.log(repoInfo);
     let folders = vscode.workspace.workspaceFolders;
     if (folders.length === 1) {
@@ -30,64 +32,15 @@ export async function yuqueClone() {
         let tocPath = path.join(folderPath, 'TOC.yaml');
         let tocVal = yaml.safeLoad(repoInfo.toc_yml, 'utf-8');
         if (tocVal === null) {
-            tocVal = [{type: 'META', namespace: choice.namespace}];
+            tocVal = [{type: 'META', namespace: namespace}];
         } else {
             assert(tocVal[0].type === 'META');
-            tocVal[0].namespace = choice.namespace;
+            tocVal[0].namespace = namespace;
         }
 
         console.log(repoInfo.toc_yml);
         fs.writeFileSync(tocPath, yaml.safeDump(tocVal), {});
-    }
-    console.log(vscode.workspace.workspaceFolders);
-}
-
-export async function yuqueFetchDocument(namespace: string, id: number) {
-    let document: any = await SDKClient.docs.get({namespace: namespace, slug: id, data: {raw: 1}});
-    let documentBody = document.body_draft || document.body;
-    let folders = vscode.workspace.workspaceFolders;
-    if (folders.length === 1) {
-        let docPath = path.join(folders[0].uri.fsPath, id.toString() + '.md');
-        fs.writeFile(docPath, documentBody, {}, function(err) {
-            console.log(err);
-        });
+    } else {
+        vscode.window.showErrorMessage('YuqueCli is not supported for multi workspaces');
     }
 }
-
-export async function yuqueUpdateDocument(namespace: string, id: number) {
-    console.log(namespace, id);
-
-    let folders = vscode.workspace.workspaceFolders;
-    if (folders.length === 1) {
-        let docPath = path.join(folders[0].uri.fsPath, id.toString() + '.md');
-        const documentBody = fs.readFileSync(docPath, 'utf-8');
-        SDKClient.docs.update({
-            namespace: namespace,
-            id: id,
-            data: {
-                body: documentBody
-            }
-        });
-    }
-
-}
-
-export async function yuqueCreateDocument(namespace: string) {
-    SDKClient.docs.create({
-        namespace: namespace,
-        data: {
-            title: "<Put Your Title Here>",
-            slug: "owly",
-            public: 1,
-            format: "markdown",
-            body: "<Put Your Body Here>"
-        }
-    });
-    const res = await SDKClient.repos.getTOC({namespace: namespace});
-    console.log(res);
-}
-
-// export async function yuqueDeleteDocument(namespace: string) {
-    // SDKClient.docs.delete({namespace: namespace, id: 15943560});
-    // SDKClient.docs.delete({namespace: namespace, id: 15943261});
-// }

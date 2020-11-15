@@ -9,3 +9,5 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Yuque Clone Command
 - Yuque Outline View
+- Yuque Create/Fetch/Open/Update/Delete Command
+- Yuque UpdateTOC/reloadTOC Command
