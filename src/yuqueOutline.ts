@@ -79,7 +79,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
             let node = new DocumentNode(item.id, item.title);
             this.nodes[item.uuid] = node;
 
-            if (!('child_uuid' in item) || !('parent_uuid' in item)) {
+            if (!('parent_uuid' in item)) {
                 this.rootNodes.push(node);
                 continue;
             }
