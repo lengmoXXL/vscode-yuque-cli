@@ -1,7 +1,8 @@
 {
 	"name": "vscode-yuque-cli",
-	"displayName": "vscode-yuque-cli",
+	"displayName": "VSCode Yuque Client",
 	"description": "The VSCode Client of Yuque",
+	"publisher": "lengmo",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.51.0"
@@ -115,5 +116,15 @@
 		"js-yaml": "^3.14.0",
 		"open": "^7.3.0",
 		"mac-open": "^0.1.3"
-	}
+	},
+	"icon": "media/icon.jpeg",
+	"bugs": {
+		"url": "https://github.com/lengmoXXL/vscode-yuque-cli/issues",
+		"email": "forlearn_lzy@163.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lengmoXXL/vscode-yuque-cli"
+	},
+	"homepage": "https://github.com/lengmoXXL/vscode-yuque-cli/blob/main/README.md"
 }
