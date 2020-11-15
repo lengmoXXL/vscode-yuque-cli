@@ -21,6 +21,10 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
     * Yuque Outline View: Visualize TOC.yaml into a tree view
 
+## Settings
+
+`yuqueCli.APIToken`: the access token of Yuque API, generate [here](https://www.yuque.com/settings/tokens)
+
 ## TODO
 
 * [x] Yuque Update Document Response
