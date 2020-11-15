@@ -1,16 +1,25 @@
 # vscode-yuque-cli README
 
-This is the README for your extension "vscode-yuque-cli". After writing up a brief description, we recommend including the following sections.
+This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
 ## Features
 
-* [x] Yuque Clone Command: Clone a yuque repo into a TOC.yaml
-* [x] Yuque Outline View: Visualize TOC.yaml into a tree view
-* [x] Yuque Create Document Command: Create a document and reponse a widget to input title and redirect to yuque website for toc arrange
-* [x] Yuque Open Document Command: Open a document of a TreeViewItem
-* [x] Yuque Update Document Command: Update Document
-* [x] Yuque Update TOC Command: Update the Current Repo
-* [x] Yuque Delete Document Command: Delete Document
+* Clone Yuque Repo's TOC
+* Create/Fetch/Open/Update/Delete Document
+* Can only update the docuemnt which is created by the extension
+
+* Commands:
+
+    * Yuque Clone Command: Clone a yuque repo into a TOC.yaml
+    * Yuque Create Document Command: Create a document and reponse a widget to input title and redirect to yuque website for toc arrange
+    * Yuque Open Document Command: Open a document of a TreeViewItem
+    * Yuque Update Document Command: Update Document
+    * Yuque Update TOC Command: Update the Current Repo
+    * Yuque Delete Document Command: Delete Document
+
+* Views
+
+    * Yuque Outline View: Visualize TOC.yaml into a tree view
 
 ## TODO
 
@@ -19,17 +28,23 @@ This is the README for your extension "vscode-yuque-cli". After writing up a bri
 
 ## How to Use
 
+**Clone a Yuque Repo**
+
+1. open a folder in vscode
+2. Call `Yuque Clone Command`, which will create a TOC.yaml file in the workspace
+
 **Create New Document**
 
 1. Call `Yuque Create Document` command, which will use yuque API to create a document
-2. Visit the website to add the document into TOC
-3. Call `Yueue Refresh` command
+2. Visit the website to add the document into TOC (the vscode will open the url atomatically)
+3. Call `Yueue Update TOC` command
 4. View update on Yuque Outline
 
 **Fetch and Modify Document** 
 1. Right Click TreeItem in YuqueOutline and Choose to fetch document
-2. Modify with markdown
-3. Right Click TreeItem in YuqueOutline and Choose to update document
+2. Right Click TreeItem in YuqueOutline and Choose to open document
+3. Modify with markdown
+4. Right Click TreeItem in YuqueOutline and Choose to update document
 
 ## Requirements
 
