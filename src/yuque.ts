@@ -20,7 +20,7 @@ export async function yuqueClone() {
     
     const choice = await vscode.window.showQuickPick(nameOfRepos);
     await updateOrCreateTOC(choice.namespace);
-    vscode.window.showInformationMessage(`${choice.name} is saved into TOC.yaml successfully`);
+    vscode.window.showInformationMessage(`${choice.label} is saved into TOC.yaml successfully`);
 }
 
 export async function updateOrCreateTOC(namespace: string) {
