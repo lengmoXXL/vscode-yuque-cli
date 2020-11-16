@@ -17,9 +17,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.1.1]
 
 ### Added
+
 - Add Settings `yuqueCli.APIToken` introduction in README.md
 
 ## [0.1.2]
 
 ### Bug Fixed
+
 - Fix Wrong Display Tree View of TOC.yaml where child_uuid field is missing
+
+## [0.1.3]
+
+### Bug Fixed
+
+- Fix update failure but info success

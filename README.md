@@ -29,6 +29,7 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
 * [x] Yuque Update Document Response
 * [ ] TOC.yaml is readonly when created
+* [ ] Display The status of Document
 
 ## How to Use
 

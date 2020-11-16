@@ -110,7 +110,7 @@ export class YuqueController {
             if (workspacePath) {
                 let docPath = path.join(workspacePath, this._lastIDClicked.id.toString() + '.md');
                 const documentBody = fs.readFileSync(docPath, 'utf-8');
-                SDKClient.docs.update({
+                let ret = await SDKClient.docs.update({
                     namespace: this._yuqueOutlineProvider.namespace(),
                     id: this._lastIDClicked.id,
                     data: {
