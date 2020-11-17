@@ -19,8 +19,8 @@ export class YuqueController {
     constructor(context: vscode.ExtensionContext) {
         this._yuqueOutlineProvider = new YuqueOutlineProvider(context);
         vscode.window.registerTreeDataProvider('yuqueOutline', this._yuqueOutlineProvider);
-        vscode.commands.registerCommand('yuqueCli.reload', () => this._yuqueOutlineProvider.refresh());
-        vscode.commands.registerCommand('yuqueCli.clone', 
+        vscode.commands.registerCommand('yuqueCli.reloadTOC', () => this._yuqueOutlineProvider.refresh());
+        vscode.commands.registerCommand('yuqueCli.cloneTOC', 
             async () => {
                 await yuqueClone();
                 this._yuqueOutlineProvider.refresh();

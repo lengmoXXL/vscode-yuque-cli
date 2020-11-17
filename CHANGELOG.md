@@ -31,3 +31,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Bug Fixed
 
 - Fix update failure but info success
+
+## [0.2.0]
+
+### Added
+
+- Change Command Name into `Yuque: XXX`
+- Add command short cut in the tree view

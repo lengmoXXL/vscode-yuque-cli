@@ -17,36 +17,36 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "yuqueCli.clone",
-				"title": "Yuque Clone"
-			},
-			{
-				"command": "yuqueCli.reload",
-				"title": "Yuque Reload TOC"
-			},
-			{
-				"command": "yuqueCli.createDocument",
-				"title": "Yuque Create Document"
-			},
-			{
-				"command": "yuqueCli.updateDocument",
-				"title": "Yuque Update Document"
-			},
-			{
-				"command": "yuqueCli.fetchDocument",
-				"title": "Yuque Fetch Document"
-			},
-			{
-				"command": "yuqueCli.openDocument",
-				"title": "Yuque Open Document"
-			},
-			{
-				"command": "yuqueCli.deleteDocument",
-				"title": "Yuque Delete Document"
+				"command": "yuqueCli.cloneTOC",
+				"title": "Yuque: Clone TOC"
 			},
 			{
 				"command": "yuqueCli.updateTOC",
-				"title": "Yuque Update TOC"
+				"title": "Yuque: Update TOC"
+			},
+			{
+				"command": "yuqueCli.reload",
+				"title": "Yuque: Reload TOC"
+			},
+			{
+				"command": "yuqueCli.createDocument",
+				"title": "Yuque: Create Document"
+			},
+			{
+				"command": "yuqueCli.updateDocument",
+				"title": "Yuque: Update Document"
+			},
+			{
+				"command": "yuqueCli.fetchDocument",
+				"title": "Yuque: Fetch Document"
+			},
+			{
+				"command": "yuqueCli.openDocument",
+				"title": "Yuque: Open Document"
+			},
+			{
+				"command": "yuqueCli.deleteDocument",
+				"title": "Yuque: Delete Document"
 			}
 		],
 		"views": {
@@ -69,6 +69,16 @@
 			}
 		],
 		"menus": {
+			"view/title": [
+				{
+					"command": "yuqueCli.cloneTOC",
+					"when": "view == yuqueOutline"
+				},
+				{
+					"command": "yuqueCli.updateTOC",
+					"when": "view == yuqueOutline"
+				}
+			],
 			"view/item/context": [
 				{
 					"command": "yuqueCli.updateDocument",
