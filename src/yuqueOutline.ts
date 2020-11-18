@@ -49,6 +49,11 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         assert(folders.length === 1);
 
         let tocPath = path.join(folders[0].uri.fsPath, 'TOC.yaml');
+
+        if (!fs.existsSync(tocPath)) {
+            return;
+        }
+
         const items: {
             type: string, // 'META', 'DOC', 
             namespace?: string,

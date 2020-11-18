@@ -4,9 +4,10 @@ import * as fs from 'fs';
 import * as open from 'open';
 import * as open_darwin from 'mac-open';
 import { SDKClient } from './util';
-import {updateOrCreateTOC, yuqueClone} from './yuque';
+import { updateOrCreateTOC, yuqueClone, YuqueDataProxy} from './proxy';
 import { YuqueOutlineProvider } from './yuqueOutline';
 import { DocumentNode } from './documentNode';
+import { Yuque } from './yuque';
 
 // decide what os should be used
 // possible node values 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
@@ -15,14 +16,19 @@ const platform = process.platform;
 export class YuqueController {
     private _lastIDClicked: DocumentNode | undefined;
     private _yuqueOutlineProvider: YuqueOutlineProvider;
+    private _yuqueModel: Yuque;
+    private _yuqueProxy: YuqueDataProxy;
 
     constructor(context: vscode.ExtensionContext) {
         this._yuqueOutlineProvider = new YuqueOutlineProvider(context);
+        this._yuqueProxy = new YuqueDataProxy();
+        this._yuqueModel = new Yuque(this._yuqueProxy);
+
         vscode.window.registerTreeDataProvider('yuqueOutline', this._yuqueOutlineProvider);
         vscode.commands.registerCommand('yuqueCli.reloadTOC', () => this._yuqueOutlineProvider.refresh());
         vscode.commands.registerCommand('yuqueCli.cloneTOC', 
             async () => {
-                await yuqueClone();
+                await this._yuqueModel.clone();
                 this._yuqueOutlineProvider.refresh();
             }
         );

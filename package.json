@@ -11,7 +11,15 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:yuqueOutline"
+		"onView:yuqueOutline",
+		"onCommand:yuqueCli.cloneTOC",
+		"onCommand:yuqueCli.updateTOC",
+		"onCommand:yuqueCli.reload",
+		"onCommand:yuqueCli.createDocument",
+		"onCommand:yuqueCli.updateDocument",
+		"onCommand:yuqueCli.fetchDocument",
+		"onCommand:yuqueCli.openDocument",
+		"onCommand:yuqueCli.deleteDocument"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
