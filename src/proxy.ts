@@ -26,6 +26,10 @@ export class YuqueDataProxy {
             this.workspaceFolderPath = folders[0].uri.fsPath;
             this.TOCPath = path.join(this.workspaceFolderPath, 'TOC.yaml');
             this.versionDirectory = path.join(this.workspaceFolderPath, '.yuque');
+
+            if (!fs.existsSync(this.versionDirectory)) {
+                fs.mkdirSync(this.versionDirectory, {});
+            }
         } else {
             vscode.window.showErrorMessage('YuqueCli is not supported for multiworkspaces');
         }
@@ -48,49 +52,23 @@ export class YuqueDataProxy {
 
     saveDocument(id: number, doc: string) {
         let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
-        let versionPath = path.join(this.versionDirectory, id.toString() + '.md');
         fs.writeFileSync(docPath, doc, {});
+    }
+
+    saveVersionDocument(id: number, doc: string) {
+        if (!fs.existsSync(this.versionDirectory)) {
+            fs.mkdirSync(this.versionDirectory, {});
+        }
+        let versionPath = path.join(this.versionDirectory, id.toString() + '.md');
         fs.writeFileSync(versionPath, doc, {});
     }
-}
 
-
-export async function yuqueClone() {
-    let user = await SDKClient.users.get();
-    let repos: {name: string, namespace: string} [] = await SDKClient.repos.list({user: user.login, data: {}});
-    let nameOfRepos = [];
-    for (let i = 0; i < repos.length; ++ i) {
-        nameOfRepos.push(
-            {
-                label: repos[i].name,
-                namespace: repos[i].namespace
-            }
-        );
-    }
-    
-    const choice = await vscode.window.showQuickPick(nameOfRepos);
-    await updateOrCreateTOC(choice.namespace);
-    vscode.window.showInformationMessage(`${choice.label} is saved into TOC.yaml successfully`);
-}
-
-export async function updateOrCreateTOC(namespace: string) {
-    const repoInfo = await SDKClient.repos.get({namespace: namespace, data: {}});
-    console.log(repoInfo);
-    let folders = vscode.workspace.workspaceFolders;
-    if (folders.length === 1) {
-        let folderPath = folders[0].uri.fsPath;
-        let tocPath = path.join(folderPath, 'TOC.yaml');
-        let tocVal = yaml.safeLoad(repoInfo.toc_yml, 'utf-8');
-        if (tocVal === null) {
-            tocVal = [{type: 'META', namespace: namespace}];
+    getUri(id: number) : vscode.Uri {
+        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+        if (fs.existsSync(docPath)) {
+            return vscode.Uri.file(docPath);
         } else {
-            assert(tocVal[0].type === 'META');
-            tocVal[0].namespace = namespace;
+            return null;
         }
-
-        console.log(repoInfo.toc_yml);
-        fs.writeFileSync(tocPath, yaml.safeDump(tocVal), {});
-    } else {
-        vscode.window.showErrorMessage('YuqueCli is not supported for multi workspaces');
     }
 }
