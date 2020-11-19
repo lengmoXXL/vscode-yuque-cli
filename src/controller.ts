@@ -3,6 +3,7 @@ import {YuqueDataProxy} from './proxy';
 import { YuqueOutlineProvider } from './outline';
 import { DocumentNode } from './documentNode';
 import { Yuque } from './yuque';
+import { SourceControl } from './sourceControl';
 
 
 export class YuqueController {
@@ -10,9 +11,11 @@ export class YuqueController {
     private _yuqueOutlineProvider: YuqueOutlineProvider;
     private _yuqueModel: Yuque;
     private _yuqueProxy: YuqueDataProxy;
+    private _sourceControl: SourceControl;
 
     constructor(context: vscode.ExtensionContext) {
         this._yuqueOutlineProvider = new YuqueOutlineProvider(context);
+        this._sourceControl = new SourceControl(context);
         this._yuqueProxy = new YuqueDataProxy();
         this._yuqueModel = new Yuque(this._yuqueProxy);
 

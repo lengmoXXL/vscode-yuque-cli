@@ -38,3 +38,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Change Command Name into `Yuque: XXX`
 - Add command short cut in the tree view
+
+## [0.2.1]
+
+### Added
+
+- Add Source Control and display QuickDiff

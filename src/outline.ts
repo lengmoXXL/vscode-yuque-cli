@@ -68,7 +68,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         this.rootNodes = [];
 
         assert(items !== null);
-        console.log(items);
+        // console.log(items);
 
         for (let i = 0; i < items.length; ++ i) {
             let item = items[i];
