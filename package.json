@@ -33,7 +33,7 @@
 				"title": "Yuque: Update TOC"
 			},
 			{
-				"command": "yuqueCli.reload",
+				"command": "yuqueCli.reloadTOC",
 				"title": "Yuque: Reload TOC"
 			},
 			{

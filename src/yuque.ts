@@ -2,20 +2,26 @@ import * as vscode from 'vscode';
 import * as yaml from 'js-yaml';
 import * as open from 'open';
 import * as open_darwin from 'mac-open';
+import * as YuqueSDK from '@yuque/sdk';
 import { YuqueDataProxy } from "./proxy";
-import { SDKClient } from "./util";
 import { assert } from 'console';
+
 
 // decide what os should be used
 // possible node values 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 const platform = process.platform;
 
 export class Yuque {
-    constructor(private proxy: YuqueDataProxy) {}
+    private SDKClient: any;
+
+    constructor(private proxy: YuqueDataProxy) {
+        let token = vscode.workspace.getConfiguration('yuqueCli').get('APIToken');
+        this.SDKClient = new YuqueSDK({token: token});
+    }
 
     async clone() {
-        let user = await SDKClient.users.get();
-        let repos: {name: string, namespace: string} [] = await SDKClient.repos.list({user: user.login, data: {}});
+        let user = await this.SDKClient.users.get();
+        let repos: {name: string, namespace: string} [] = await this.SDKClient.repos.list({user: user.login, data: {}});
         let nameOfRepos = [];
         for (let i = 0; i < repos.length; ++ i) {
             nameOfRepos.push(
@@ -32,7 +38,7 @@ export class Yuque {
     }
 
     async fetchDocument(namespace: string, id: number) {
-        let document: any = await SDKClient.docs.get(
+        let document: any = await this.SDKClient.docs.get(
             {namespace: namespace, slug: id, data: {raw: 1}});
         let documentBody = document.body;
         this.proxy.saveDocument(id, documentBody);
@@ -42,7 +48,7 @@ export class Yuque {
     async createDocument(namespace: string) {
         let title = await vscode.window.showInputBox({prompt: "Put Your Title Here"});
         if (title) {
-            let res = await SDKClient.docs.create({
+            let res = await this.SDKClient.docs.create({
                 namespace: namespace,
                 data: {
                     title: title,
@@ -68,7 +74,7 @@ export class Yuque {
 
     async updateDocument(namespace: string, id: number) {
         let documentBody = this.proxy.getDocument(id);
-        let ret = await SDKClient.docs.update({
+        let ret = await this.SDKClient.docs.update({
             namespace: namespace,
             id: id,
             data: {
@@ -90,14 +96,14 @@ export class Yuque {
     }
 
     async deleteDocument(namespace: string, id: number) {
-        await SDKClient.docs.delete({
+        await this.SDKClient.docs.delete({
             namespace: namespace,
             id: id
         });
     }
 
     async updateOrCreateTOC(namespace: string) {
-        const repoInfo = await SDKClient.repos.get({namespace: namespace, data: {}});
+        const repoInfo = await this.SDKClient.repos.get({namespace: namespace, data: {}});
         let tocVal = yaml.safeLoad(repoInfo.toc_yml, 'utf-8');
         if (tocVal === null) {
             tocVal = [{type: 'META', namespace: namespace}];
