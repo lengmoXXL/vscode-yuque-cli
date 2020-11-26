@@ -38,3 +38,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Fix QuickDiff not supported in windows
 - Add ResourceState in SCM
+
+## [0.2.3]
+
+- Fix Bug of not display all the modification in SCM

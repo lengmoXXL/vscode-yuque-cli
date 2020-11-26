@@ -22,7 +22,6 @@ export class SourceControl {
     private sourceControl: vscode.SourceControl;
     private sourceGroup: vscode.SourceControlResourceGroup;
     private timeout: NodeJS.Timer;
-    private updatedUris: Map<string, vscode.Uri>;
 
     constructor(context: vscode.ExtensionContext) {
         let folders = vscode.workspace.workspaceFolders;
@@ -39,11 +38,10 @@ export class SourceControl {
         this.sourceGroup = this.sourceControl.createResourceGroup('modification', 'Changes');
         this.sourceControl.quickDiffProvider = new QuickDiffer();
 
-        this.updatedUris = new Map();
+        this.tryUpdateChangedGroup();
     }
 
     onResourceChange(uri: vscode.Uri) {
-        this.updatedUris.set(uri.fsPath, uri);
         if (this.timeout) { clearTimeout(this.timeout); }
 		this.timeout = setTimeout(() => this.tryUpdateChangedGroup(), 500);
     }
@@ -59,37 +57,36 @@ export class SourceControl {
     
     	/** This is where the source control determines, which documents were updated, removed, and theoretically added. */
 	async updateChangedGroup(): Promise<void> {
-		// for simplicity we ignore which document was changed in this event and scan all of them
-		const changedResources: vscode.SourceControlResourceState[] = [];
+        vscode.workspace.findFiles('*.md').then(async uris => {
+            // for simplicity we ignore which document was changed in this event and scan all of them
+            const changedResources: vscode.SourceControlResourceState[] = [];
 
-        for (let e of this.updatedUris.entries()) {
-			let isDirty: boolean;
-            let wasDeleted: boolean;
-            let uri = e[1];
+            for (let uri of uris) {
+                let isDirty: boolean;
+                let wasDeleted: boolean;
 
-            const pathExists = fs.existsSync(uri.fsPath)
-			if (pathExists) {
-				const document = await vscode.workspace.openTextDocument(uri);
-				isDirty = this.isDirty(uri, document);
-				wasDeleted = false;
-			}
-			else {
-				isDirty = true;
-				wasDeleted = true;
-			}
+                const pathExists = fs.existsSync(uri.fsPath)
+                if (pathExists) {
+                    const document = await vscode.workspace.openTextDocument(uri);
+                    isDirty = this.isDirty(uri, document);
+                    wasDeleted = false;
+                }
+                else {
+                    isDirty = true;
+                    wasDeleted = true;
+                }
 
-			if (isDirty) {
-				const resourceState = this.toSourceControlResourceState(uri, wasDeleted);
-				changedResources.push(resourceState);
-			}
-        }
+                if (isDirty) {
+                    const resourceState = this.toSourceControlResourceState(uri, wasDeleted);
+                    changedResources.push(resourceState);
+                }
+            }
 
-        this.updatedUris.clear();
+            this.sourceGroup.resourceStates = changedResources;
 
-		this.sourceGroup.resourceStates = changedResources;
-
-		// the number of modified resources needs to be assigned to the SourceControl.count filed to let VS Code show the number.
-		this.sourceControl.count = this.sourceGroup.resourceStates.length;
+            // the number of modified resources needs to be assigned to the SourceControl.count filed to let VS Code show the number.
+            this.sourceControl.count = this.sourceGroup.resourceStates.length;
+        });
     }
 
 	toSourceControlResourceState(docUri: vscode.Uri, deleted: boolean): vscode.SourceControlResourceState {
