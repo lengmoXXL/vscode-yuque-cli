@@ -8,39 +8,33 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [0.1.0]
 
-### Added
-- Yuque Clone Command
-- Yuque Outline View
-- Yuque Create/Fetch/Open/Update/Delete Command
-- Yuque UpdateTOC/reloadTOC Command
+- Add Yuque Clone Command
+- Add Yuque Outline View
+- Add Yuque Create/Fetch/Open/Update/Delete Command
+- Add Yuque UpdateTOC/reloadTOC Command
 
 ## [0.1.1]
-
-### Added
 
 - Add Settings `yuqueCli.APIToken` introduction in README.md
 
 ## [0.1.2]
 
-### Bug Fixed
-
 - Fix Wrong Display Tree View of TOC.yaml where child_uuid field is missing
 
 ## [0.1.3]
 
-### Bug Fixed
-
 - Fix update failure but info success
 
 ## [0.2.0]
-
-### Added
 
 - Change Command Name into `Yuque: XXX`
 - Add command short cut in the tree view
 
 ## [0.2.1]
 
-### Added
-
 - Add Source Control and display QuickDiff
+
+## [0.2.2]
+
+- Fix QuickDiff not supported in windows
+- Add ResourceState in SCM
