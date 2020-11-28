@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Fix the bug of resource not update when update the document
+
 ## [0.1.0]
 
 - Add Yuque Clone Command

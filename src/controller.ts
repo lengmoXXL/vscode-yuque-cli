@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import {YuqueDataProxy} from './proxy';
+import * as fs from 'fs';
+import { YuqueDataProxy } from './proxy';
 import { YuqueOutlineProvider } from './outline';
 import { DocumentNode } from './documentNode';
 import { Yuque } from './yuque';
@@ -29,8 +30,11 @@ export class YuqueController {
         );
         vscode.commands.registerCommand('yuqueCli.updateTOC',
             async () => {
-                await this.updateTOC();
-                this._yuqueOutlineProvider.refresh();
+                this.updateTOC().then(
+                    () => this._yuqueOutlineProvider.refresh()
+                ).then(
+                    () => this._sourceControl.tryUpdateChangedGroup()
+                );
             }
         );
 
@@ -39,7 +43,9 @@ export class YuqueController {
         vscode.commands.registerCommand('yuqueCli.openDocument',
             () => this.openDocument());
         vscode.commands.registerCommand('yuqueCli.updateDocument',
-            () => this.updateDocument());
+            () => {
+                this.updateDocument().then(() => this._sourceControl.tryUpdateChangedGroup());
+            });
         vscode.commands.registerCommand('yuqueCli.createDocument',
             () => this._yuqueModel.createDocument(this._yuqueOutlineProvider.namespace()));
         vscode.commands.registerCommand('yuqueCli.deleteDocument',

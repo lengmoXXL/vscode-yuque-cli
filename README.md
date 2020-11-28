@@ -31,6 +31,7 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 * [x] Change Command Name
 * [x] Add shortcup in the TreeView
 * [x] Design custom Source Control to display modification
+* [x] Fix update document without update stats in SCM
 * [ ] TOC.yaml is readonly when created
 * [ ] Display The status of Document - use icons
 * [ ] Add Open in Website Command
