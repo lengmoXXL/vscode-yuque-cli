@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - Fix the bug of resource not update when update the document
+- Add Support for clone group repo
 
 ## [0.1.0]
 

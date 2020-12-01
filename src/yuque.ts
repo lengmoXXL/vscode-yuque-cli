@@ -21,7 +21,19 @@ export class Yuque {
 
     async clone() {
         let user = await this.SDKClient.users.get();
-        let repos: {name: string, namespace: string} [] = await this.SDKClient.repos.list({user: user.login, data: {}});
+        let groups = await this.SDKClient.groups.list({login: user.login});
+        let nameOfGroups: {label: string, login: string, group: boolean} [] = groups.map(group => {return {label: group.name, login: group.login, group: true}});
+        nameOfGroups.push({label: 'self', login: user.login, group: false});
+        // console.log(groups);
+
+        const groupChoice = await vscode.window.showQuickPick(nameOfGroups);
+        // console.log(groupChoice);
+        let repos: {name: string, namespace: string}[];
+        if (groupChoice.group) {
+            repos = await this.SDKClient.repos.list({group: groupChoice.login, data: {}});
+        } else {
+            repos = await this.SDKClient.repos.list({user: user.login, data: {}});
+        }
         let nameOfRepos = [];
         for (let i = 0; i < repos.length; ++ i) {
             nameOfRepos.push(
@@ -31,7 +43,7 @@ export class Yuque {
                 }
             );
         }
-        
+
         const choice = await vscode.window.showQuickPick(nameOfRepos);
         await this.updateOrCreateTOC(choice.namespace);
         vscode.window.showInformationMessage(`${choice.label} is saved into TOC.yaml successfully`);
