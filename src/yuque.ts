@@ -107,6 +107,24 @@ export class Yuque {
         }
     }
 
+    async openDocumentInWebsite(namespace: string, slug: string) {
+        let url = `https://www.yuque.com/${namespace}/${slug}`;
+        if (platform === 'darwin') {
+            open_darwin(url);
+        } else {
+            open(url);
+        }
+    }
+
+    async openTOCArrange(namespace: string) {
+        let url = `https://www.yuque.com/${namespace}/toc`;
+        if (platform === 'darwin') {
+            open_darwin(url);
+        } else {
+            open(url);
+        }
+    }
+
     async deleteDocument(namespace: string, id: number) {
         await this.SDKClient.docs.delete({
             namespace: namespace,

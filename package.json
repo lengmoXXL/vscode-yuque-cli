@@ -55,6 +55,14 @@
 			{
 				"command": "yuqueCli.deleteDocument",
 				"title": "Yuque: Delete Document"
+			},
+			{
+				"command": "yuqueCli.openInWebsite",
+				"title": "Yuque: Open Document In Website"
+			},
+			{
+				"command": "yuqueCli.openTOCArrange",
+				"title": "Yuque: Open TOC Arrange In Website"
 			}
 		],
 		"views": {
@@ -85,6 +93,10 @@
 				{
 					"command": "yuqueCli.updateTOC",
 					"when": "view == yuqueOutline"
+				},
+				{
+					"command": "yuqueCli.openTOCArrange",
+					"when": "view == yuqueOutline"
 				}
 			],
 			"view/item/context": [
@@ -102,6 +114,10 @@
 				},
 				{
 					"command": "yuqueCli.deleteDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.openInWebsite",
 					"when": "view == yuqueOutline && viewItem == document"
 				}
 			]

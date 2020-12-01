@@ -6,9 +6,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Fix the bug of resource not update when update the document
-- Add Support for clone group repo
-
 ## [0.1.0]
 
 - Add Yuque Clone Command
@@ -45,3 +42,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.2.3]
 
 - Fix Bug of not display all the modification in SCM
+
+## [0.2.4]
+- Fix the bug of resource not update when update the document
+- Add Support for clone group repo
+- Add Yuque Open Document In Website Command
+- Add Yuque Open TOC Arrange Command

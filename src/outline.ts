@@ -59,6 +59,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
             namespace?: string,
             title?:string,
             id?: number,
+            url?: string,
             uuid?: string,
             child_uuid?: string,
             parent_uuid?: string
@@ -77,11 +78,11 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
                 continue;
             }
 
-            if (!('uuid' in item) || !('id' in item) || !('title' in item)) {
+            if (!('uuid' in item) || !('id' in item) || !('title' in item) || (!('url' in item))) {
                 continue;
             }
 
-            let node = new DocumentNode(item.id, item.title);
+            let node = new DocumentNode(item.id, item.title, item.url);
             this.nodes[item.uuid] = node;
 
             if (!('parent_uuid' in item)) {

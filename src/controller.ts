@@ -57,6 +57,18 @@ export class YuqueController {
         );
         vscode.commands.registerCommand('yuqueCli.onDocumentClicked',
             (node: DocumentNode) => this.onYuqueDocumentClicked(node));
+        
+        vscode.commands.registerCommand('yuqueCli.openInWebsite',
+            async () => {
+                if (this._lastIDClicked) {
+                    await this._yuqueModel.openDocumentInWebsite(this._yuqueOutlineProvider.namespace(), this._lastIDClicked.slug);
+                } else {
+                    vscode.window.showWarningMessage('Please left click TreeItem first');
+                }
+            }
+        );
+
+        vscode.commands.registerCommand('yuqueCli.openTOCArrange', async () => this._yuqueModel.openTOCArrange(this._yuqueOutlineProvider.namespace()));
     }
 
     onYuqueDocumentClicked(node: DocumentNode): void {

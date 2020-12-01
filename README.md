@@ -33,10 +33,11 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 * [x] Design custom Source Control to display modification
 * [x] Fix update document without update stats in SCM
 * [x] Support Clone Group Repo
-* [ ] TOC.yaml is readonly when created
-* [ ] Display The status of Document - use icons
-* [ ] Add Open in Website Command
-* [ ] Add Yuque Arrange TOC Command
+* [x] Add Open in Website Command
+* [x] Add Yuque Arrange TOC Command
+* [ ] Use DB to store all the things
+  * [ ] TOC.yaml is readonly when created
+  * [ ] Display The status of Document - use icons
 
 ## How to Use
 
