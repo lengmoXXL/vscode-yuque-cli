@@ -6,7 +6,7 @@ import { YuqueController } from './controller';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	new YuqueController(context);
+	YuqueController.getInstanceSync(context);
 }
 
 // this method is called when your extension is deactivated

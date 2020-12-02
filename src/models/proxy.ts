@@ -8,6 +8,7 @@ export class TOCItem {
     namespace?: string;
     title?:string;
     id?: number;
+    url?: string;
     uuid?: string;
     child_uuid?: string;
     parent_uuid?: string;
@@ -33,9 +34,13 @@ export class YuqueDataProxy {
         }
     }
 
-    getTOC() {
-        return yaml.safeLoad(
-            fs.readFileSync(this.TOCPath, 'utf-8'));
+    async getTOC(): Promise<TOCItem[]> {
+        if (!fs.existsSync(this.TOCPath)) {
+            return Promise.resolve([]);
+        }
+
+        return Promise.resolve(yaml.safeLoad(
+            fs.readFileSync(this.TOCPath, 'utf-8')));
     }
 
     saveTOC(newTOC: any) {

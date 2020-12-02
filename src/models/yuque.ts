@@ -80,7 +80,7 @@ export class Yuque {
                 }
             }
         } else {
-            vscode.window.showErrorMessage('Title must not be null');
+            throw new Error('Title must not be null');
         }
     }
 
@@ -103,7 +103,7 @@ export class Yuque {
         if (uri) {
             vscode.workspace.openTextDocument(uri).then(document => vscode.window.showTextDocument(document));
         } else {
-            vscode.window.showErrorMessage('File not fetched');
+            throw new Error('File not fetched');
         }
     }
 

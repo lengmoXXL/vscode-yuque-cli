@@ -2,19 +2,52 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { assert } from 'console';
-import { DocumentNode } from './documentNode';
+import { TOCItem } from './proxy';
 
+export class DocumentNode {
+
+    public id: number;
+    public slug: string;
+    public label: string;
+    public children: DocumentNode[];
+
+    constructor(id: number, label: string, slug: string) {
+        this.id = id;
+        this.label = label;
+        this.children = [];
+        this.slug = slug;
+    }
+}
 
 export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNode> {
 	private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
 	readonly onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event;
 
-    private repoNamespace: string;
-    private nodes: any;
-    private rootNodes: DocumentNode[];
+    private _repoNamespace: string;
+    private _nodes: any;
+    private _rootNodes: DocumentNode[];
+    private _lastClickedNode: DocumentNode;
 
-    constructor(private context: vscode.ExtensionContext) {
-        this.load();
+    constructor(private context: vscode.ExtensionContext, items?: TOCItem[]) {
+        context.subscriptions.push(
+            vscode.commands.registerCommand('yuqueCli.onDocumentClicked',
+                (node: DocumentNode) => this.onYuqueDocumentClicked(node))
+        );
+
+        if (items !== undefined) {
+            this.loadTOC(items);
+        }
+    }
+
+    onYuqueDocumentClicked(node: DocumentNode): void {
+        this._lastClickedNode = node;
+    }
+
+    getLastClickedNode(): DocumentNode {
+        if (this._lastClickedNode) {
+            return this._lastClickedNode;
+        }
+        throw new Error("Please click Outline Node first");
     }
 
     getTreeItem(node: DocumentNode): vscode.TreeItem {
@@ -34,39 +67,12 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         if (node) {
             return Promise.resolve(node.children);
         }
-        return Promise.resolve(this.rootNodes);
+        return Promise.resolve(this._rootNodes);
     }
 
-    refresh(): void {
-        this.load();
-        this._onDidChangeTreeData.fire(undefined);
-    }
-
-    load(): void {
-        const yaml = require('js-yaml');
-
-        let folders = vscode.workspace.workspaceFolders;
-        assert(folders.length === 1);
-
-        let tocPath = path.join(folders[0].uri.fsPath, 'TOC.yaml');
-
-        if (!fs.existsSync(tocPath)) {
-            return;
-        }
-
-        const items: {
-            type: string, // 'META', 'DOC', 
-            namespace?: string,
-            title?:string,
-            id?: number,
-            url?: string,
-            uuid?: string,
-            child_uuid?: string,
-            parent_uuid?: string
-        } [] = yaml.safeLoad(fs.readFileSync(tocPath, 'utf-8'));
-
-        this.nodes = {};
-        this.rootNodes = [];
+    async loadTOC(items: TOCItem[]) {
+        this._nodes = {};
+        this._rootNodes = [];
 
         assert(items !== null);
         // console.log(items);
@@ -74,7 +80,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         for (let i = 0; i < items.length; ++ i) {
             let item = items[i];
             if (item.type === 'META') {
-                this.repoNamespace = item.namespace;
+                this._repoNamespace = item.namespace;
                 continue;
             }
 
@@ -83,24 +89,25 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
             }
 
             let node = new DocumentNode(item.id, item.title, item.url);
-            this.nodes[item.uuid] = node;
+            this._nodes[item.uuid] = node;
 
             if (!('parent_uuid' in item)) {
-                this.rootNodes.push(node);
+                this._rootNodes.push(node);
                 continue;
             }
 
             if (item.parent_uuid.length === 0) {
-                this.rootNodes.push(node);
+                this._rootNodes.push(node);
             } else {
-                let parentNode: DocumentNode = this.nodes[item.parent_uuid];
+                let parentNode: DocumentNode = this._nodes[item.parent_uuid];
                 parentNode.children.push(node);
             }
         }
+        this._onDidChangeTreeData.fire(undefined);
     }
 
     namespace(): string {
-        return this.repoNamespace;
+        return this._repoNamespace;
     }
 
     private icon(): any {
