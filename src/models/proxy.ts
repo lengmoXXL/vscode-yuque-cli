@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import { version } from 'os';
 
 export class TOCItem {
     type: string;
@@ -66,12 +67,26 @@ export class YuqueDataProxy {
         fs.writeFileSync(versionPath, doc, {});
     }
 
+    deleteDocument(id: number) {
+        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+        if (fs.existsSync(docPath)) {
+            fs.unlinkSync(docPath);
+        }
+    }
+
+    deleteVersionDocument(id: number) {
+        let versionPath = path.join(this.versionDirectory, id.toString() + '.md');
+        if (fs.existsSync(versionPath)) {
+            fs.unlinkSync(versionPath);
+        }
+    }
+
     getUri(id: number) : vscode.Uri {
         let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
         if (fs.existsSync(docPath)) {
             return vscode.Uri.file(docPath);
         } else {
-            return null;
+            throw new Error('Document not fetch');
         }
     }
 }

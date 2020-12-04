@@ -45,16 +45,14 @@ export class Yuque {
         }
 
         const choice = await vscode.window.showQuickPick(nameOfRepos);
-        await this.updateOrCreateTOC(choice.namespace);
-        vscode.window.showInformationMessage(`${choice.label} is saved into TOC.yaml successfully`);
+        return await this.updateOrCreateTOC(choice.namespace);
     }
 
     async fetchDocument(namespace: string, id: number) {
         let document: any = await this.SDKClient.docs.get(
             {namespace: namespace, slug: id, data: {raw: 1}});
         let documentBody = document.body;
-        this.proxy.saveDocument(id, documentBody);
-        this.proxy.saveVersionDocument(id, documentBody);
+        return documentBody;
     }
 
     async createDocument(namespace: string) {
@@ -84,27 +82,14 @@ export class Yuque {
         }
     }
 
-    async updateDocument(namespace: string, id: number) {
-        let documentBody = this.proxy.getDocument(id);
-        let ret = await this.SDKClient.docs.update({
+    async updateDocument(namespace: string, id: number, body: string) {
+        return await this.SDKClient.docs.update({
             namespace: namespace,
             id: id,
             data: {
-                body: documentBody
+                body: body
             }
         });
-        if ('body' in ret) {
-            this.proxy.saveVersionDocument(id, ret.body);
-        }
-    }
-
-    async openDocument(id: number) {
-        let uri = this.proxy.getUri(id);
-        if (uri) {
-            vscode.workspace.openTextDocument(uri).then(document => vscode.window.showTextDocument(document));
-        } else {
-            throw new Error('File not fetched');
-        }
     }
 
     async openDocumentInWebsite(namespace: string, slug: string) {
@@ -141,7 +126,6 @@ export class Yuque {
             assert(tocVal[0].type === 'META');
             tocVal[0].namespace = namespace;
         }
-
-        this.proxy.saveTOC(tocVal);
+        return tocVal;
     }
 }
