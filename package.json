@@ -3,7 +3,7 @@
 	"displayName": "VSCode Yuque Client",
 	"description": "The VSCode Client of Yuque",
 	"publisher": "lengmo",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"engines": {
 		"vscode": "^1.51.0"
 	},
