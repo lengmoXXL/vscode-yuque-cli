@@ -2,6 +2,8 @@
 
 This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
+![bala](./media/720p.gif)
+
 ## Features
 
 * Clone Yuque Repo's TOC
