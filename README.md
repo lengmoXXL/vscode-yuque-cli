@@ -2,7 +2,7 @@
 
 This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
-![bala](./media/720p.gif)
+![tutorial](https://github.com/lengmoXXL/vscode-yuque-cli/raw/main/media/720p.gif)
 
 ## Features
 
