@@ -80,6 +80,10 @@
 					"yuqueCli.APIToken": {
 						"type": "string",
 						"default": "<enter-your-api-token>"
+					},
+					"yuqueCli.EndPoint": {
+						"type": "string",
+						"default": "https://www.yuque.com/api/v2/"
 					}
 				}
 			}

@@ -26,6 +26,7 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 ## Settings
 
 `yuqueCli.APIToken`: the access token of Yuque API, generate [here](https://www.yuque.com/settings/tokens)
+`yuqueCli.EndPoint`: the url of Yuque Backend, the form is `https://<yuque domain name>/api/v2/`, for example, `https://www.yuque.com/api/v2/`
 
 ## TODO
 

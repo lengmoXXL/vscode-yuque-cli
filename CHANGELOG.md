@@ -48,3 +48,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Add Support for clone group repo
 - Add Yuque Open Document In Website Command
 - Add Yuque Open TOC Arrange Command
+
+## [0.2.8]
+
+- Add settings of EndPoint to support different Yuque Backend
