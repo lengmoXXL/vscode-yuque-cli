@@ -63,6 +63,10 @@
 			{
 				"command": "yuqueCli.openTOCArrange",
 				"title": "Yuque: Open TOC Arrange In Website"
+			},
+			{
+				"command": "yuqueCli.switchActiveFolder",
+				"title": "Yuque: Switch Active Folder"
 			}
 		],
 		"views": {
@@ -107,6 +111,14 @@
 				},
 				{
 					"command": "yuqueCli.openTOCArrange",
+					"when": "view == yuqueOutline"
+				},
+				{
+					"command": "yuqueCli.createDocument",
+					"when": "view == yuqueOutline"
+				},
+				{
+					"command": "yuqueCli.switchActiveFolder",
 					"when": "view == yuqueOutline"
 				}
 			],

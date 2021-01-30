@@ -1,13 +1,13 @@
-import { assert } from 'console';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { YuqueDataProxy } from './proxy';
 
 function originResource(uri: vscode.Uri): vscode.Uri {
     let filename = path.basename(uri.fsPath);
     let originFsPath = path.join(
         path.dirname(uri.fsPath), '.yuque', filename
-    )
+    );
     return vscode.Uri.file(originFsPath); 
 }
 
@@ -18,18 +18,34 @@ class QuickDiffer {
 }
 
 export class SourceControl {
+    private fileSystemWatcher: vscode.FileSystemWatcher;
     private sourceControl: vscode.SourceControl;
     private sourceGroup: vscode.SourceControlResourceGroup;
     private timeout: NodeJS.Timer;
 
-    constructor(private context: vscode.ExtensionContext, private workspaceFolder: vscode.WorkspaceFolder) {
-        const fileSystemWatcher = vscode.workspace.createFileSystemWatcher(
-            new vscode.RelativePattern(this.workspaceFolder, "*.md"));
-		fileSystemWatcher.onDidChange(uri => this.onResourceChange(uri), context.subscriptions);
-		fileSystemWatcher.onDidCreate(uri => this.onResourceChange(uri), context.subscriptions);
-        fileSystemWatcher.onDidDelete(uri => this.onResourceChange(uri), context.subscriptions);
+    constructor(private context: vscode.ExtensionContext, private proxy: YuqueDataProxy) {
+        this.activate();
+    }
+
+    activate() {
+        if (this.sourceControl) {
+            this.sourceControl.dispose();
+        }
+        if (this.sourceGroup) {
+            this.sourceGroup.dispose();
+        }
+        if (this.fileSystemWatcher) {
+            this.fileSystemWatcher.dispose();
+        }
+
+        let workspaceFolder = this.proxy.getWorkspaceFolder();
+        this.fileSystemWatcher = vscode.workspace.createFileSystemWatcher(
+            new vscode.RelativePattern(workspaceFolder, "*.md"));
+		this.fileSystemWatcher.onDidChange(uri => this.onResourceChange(uri), this.context.subscriptions);
+		this.fileSystemWatcher.onDidCreate(uri => this.onResourceChange(uri), this.context.subscriptions);
+        this.fileSystemWatcher.onDidDelete(uri => this.onResourceChange(uri), this.context.subscriptions);
         
-        this.sourceControl = vscode.scm.createSourceControl('yuque', 'Yuque Modification', this.workspaceFolder.uri);
+        this.sourceControl = vscode.scm.createSourceControl('yuque', 'Yuque Modification', workspaceFolder.uri);
         this.sourceGroup = this.sourceControl.createResourceGroup('modification', 'Changes');
         this.sourceControl.quickDiffProvider = new QuickDiffer();
 

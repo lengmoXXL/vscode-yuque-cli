@@ -6,8 +6,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Add Support For Multi Root workspace
-
 ## [0.1.0]
 
 - Add Yuque Clone Command
@@ -54,3 +52,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.2.8]
 
 - Add settings of EndPoint to support different Yuque Backend
+
+## [0.3.0]
+
+- Add Support For Multi Root workspace
+- Add Yuque Switch Active Folder Command
+- Fetch Document When Open not exists Document

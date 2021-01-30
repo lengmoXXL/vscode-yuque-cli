@@ -39,7 +39,7 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 * [x] Support Clone Group Repo
 * [x] Add Open in Website Command
 * [x] Add Yuque Arrange TOC Command
-* [ ] Add Command to Switch Active Folder
+* [x] Add Command to Switch Active Folder
 * [ ] Add DocumentName in SourceControl
 * [ ] Open Document when click item in SourceControl
 * [ ] Use DB to store all the things

@@ -21,9 +21,9 @@ export class YuqueController {
     }
 
     private constructor(context: vscode.ExtensionContext) {
-        this._yuqueProxy = new YuqueDataProxy();
-        this._sourceControl = new SourceControl(context, this._yuqueProxy.getWorkspaceFolder());
         this._yuqueOutlineProvider = new YuqueOutlineProvider(context);
+        this._yuqueProxy = new YuqueDataProxy();
+        this._sourceControl = new SourceControl(context, this._yuqueProxy);
         this._yuqueModel = new Yuque(this._yuqueProxy);
 
         this._yuqueProxy.getTOC().then(
@@ -130,6 +130,13 @@ export class YuqueController {
                 async () => this._yuqueModel.openTOCArrange(this._yuqueOutlineProvider.namespace())
             )
         );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'yuqueCli.switchActiveFolder',
+                async() => this.switchActivateFolder()
+            )
+        );
     }
 
     async refreshTOC() {
@@ -169,7 +176,13 @@ export class YuqueController {
     async openDocument() {
         try {
             let node = this._yuqueOutlineProvider.getLastClickedNode();
-            let uri = this._yuqueProxy.getUri(node.id);
+            let uri = null;
+            try {
+                uri = this._yuqueProxy.getUri(node.id);
+            } catch (e) {
+                await this.fetchDocument();
+                uri = this._yuqueProxy.getUri(node.id);
+            }
             await vscode.workspace.openTextDocument(uri).then(document => vscode.window.showTextDocument(document));
         } catch (e) {
             vscode.window.showErrorMessage(e.toString());
@@ -192,5 +205,21 @@ export class YuqueController {
     async updateTOC() {
         let toc = await this._yuqueModel.updateOrCreateTOC(this._yuqueOutlineProvider.namespace());
         this._yuqueProxy.saveTOC(toc);
+    }
+
+    async switchActivateFolder() {
+        let folder = await vscode.window.showQuickPick(
+            vscode.workspace.workspaceFolders.map(folder => {return {label: folder.name, folder: folder};}));
+        if (folder) {
+            this._yuqueProxy.saveDeactiveForCurrentFolder();
+            this._yuqueProxy.activate(folder.folder);
+            this._yuqueProxy.saveActivateForCurrentFolder();
+            this._sourceControl.activate();
+            this._yuqueModel.activate();
+
+            this._yuqueProxy.getTOC().then(
+                items => this._yuqueOutlineProvider.loadTOC(items)
+            );
+        }
     }
 }

@@ -22,19 +22,32 @@ export class YuqueDataProxy {
 
     constructor() {
         let folders = vscode.workspace.workspaceFolders;
-        this.workspaceFolder = folders[0];
+        let activateFolder = folders[0];
         for (let folder of folders) {
-            let is_active = vscode.workspace.getConfiguration('yuqueCli', folder).get('Active');
-            if (is_active) {
-                this.workspaceFolder = folder;
+            let isActive = vscode.workspace.getConfiguration('yuqueCli', folder).get('Active');
+            if (isActive) {
+                activateFolder = folder;
             }
         }
+        this.activate(activateFolder);
+    }
+
+    activate(folder: vscode.WorkspaceFolder) {
+        this.workspaceFolder = folder;
         this.workspaceFolderPath = this.workspaceFolder.uri.fsPath;
         this.TOCPath = path.join(this.workspaceFolderPath, 'TOC.yaml');
         this.versionDirectory = path.join(this.workspaceFolderPath, '.yuque');
         if (!fs.existsSync(this.versionDirectory)) {
             fs.mkdirSync(this.versionDirectory, {});
         }
+    }
+
+    saveDeactiveForCurrentFolder() {
+        vscode.workspace.getConfiguration('yuqueCli', this.workspaceFolder).update('Active', false);
+    }
+
+    saveActivateForCurrentFolder() {
+        vscode.workspace.getConfiguration('yuqueCli', this.workspaceFolder).update('Active', true);
     }
 
     getWorkspaceFolder() : vscode.WorkspaceFolder {
