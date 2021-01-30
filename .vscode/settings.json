@@ -10,4 +10,5 @@
     "typescript.tsc.autoDetect": "off",
     "terminal.integrated.inheritEnv": true,
     "editor.fontFamily": "Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontSize": 13
 }

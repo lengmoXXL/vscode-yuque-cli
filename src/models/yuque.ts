@@ -15,8 +15,9 @@ export class Yuque {
     private SDKClient: any;
 
     constructor(private proxy: YuqueDataProxy) {
-        let token = vscode.workspace.getConfiguration('yuqueCli').get('APIToken');
-        let endPoint = vscode.workspace.getConfiguration('yuqueCli').get('EndPoint');
+        let folder = proxy.getWorkspaceFolder();
+        let token = vscode.workspace.getConfiguration('yuqueCli', folder).get('APIToken');
+        let endPoint = vscode.workspace.getConfiguration('yuqueCli', folder).get('EndPoint');
         this.SDKClient = new YuqueSDK({token: token, endpoint: endPoint});
     }
 

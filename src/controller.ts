@@ -21,8 +21,8 @@ export class YuqueController {
     }
 
     private constructor(context: vscode.ExtensionContext) {
-        this._sourceControl = new SourceControl(context);
         this._yuqueProxy = new YuqueDataProxy();
+        this._sourceControl = new SourceControl(context, this._yuqueProxy.getWorkspaceFolder());
         this._yuqueOutlineProvider = new YuqueOutlineProvider(context);
         this._yuqueModel = new Yuque(this._yuqueProxy);
 

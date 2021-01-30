@@ -18,16 +18,11 @@ class QuickDiffer {
 }
 
 export class SourceControl {
-    private workspaceFolder: vscode.WorkspaceFolder;
     private sourceControl: vscode.SourceControl;
     private sourceGroup: vscode.SourceControlResourceGroup;
     private timeout: NodeJS.Timer;
 
-    constructor(context: vscode.ExtensionContext) {
-        let folders = vscode.workspace.workspaceFolders;
-        assert(folders.length === 1);
-        this.workspaceFolder = folders[0];
-        
+    constructor(private context: vscode.ExtensionContext, private workspaceFolder: vscode.WorkspaceFolder) {
         const fileSystemWatcher = vscode.workspace.createFileSystemWatcher(
             new vscode.RelativePattern(this.workspaceFolder, "*.md"));
 		fileSystemWatcher.onDidChange(uri => this.onResourceChange(uri), context.subscriptions);
@@ -55,7 +50,7 @@ export class SourceControl {
 		}
     } 
     
-    	/** This is where the source control determines, which documents were updated, removed, and theoretically added. */
+    /** This is where the source control determines, which documents were updated, removed, and theoretically added. */
 	async updateChangedGroup(): Promise<void> {
         vscode.workspace.findFiles('*.md').then(async uris => {
             // for simplicity we ignore which document was changed in this event and scan all of them
@@ -65,7 +60,7 @@ export class SourceControl {
                 let isDirty: boolean;
                 let wasDeleted: boolean;
 
-                const pathExists = fs.existsSync(uri.fsPath)
+                const pathExists = fs.existsSync(uri.fsPath);
                 if (pathExists) {
                     const document = await vscode.workspace.openTextDocument(uri);
                     isDirty = this.isDirty(uri, document);

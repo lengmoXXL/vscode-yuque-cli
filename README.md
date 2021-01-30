@@ -25,8 +25,9 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 
 ## Settings
 
-`yuqueCli.APIToken`: the access token of Yuque API, generate [here](https://www.yuque.com/settings/tokens)
-`yuqueCli.EndPoint`: the url of Yuque Backend, the form is `https://<yuque domain name>/api/v2/`, for example, `https://www.yuque.com/api/v2/`
+* `yuqueCli.APIToken`: the access token of Yuque API, generate [here](https://www.yuque.com/settings/tokens)
+* `yuqueCli.EndPoint`: the url of Yuque Backend, the form is `https://<yuque domain name>/api/v2/`, for example, `https://www.yuque.com/api/v2/`
+* `yuqueCli.Active`: true or false, specify which folder is active for yuque, for multi root workspace
 
 ## TODO
 
@@ -38,8 +39,10 @@ This extension is for VSCode client for [Yuque](https://www.yuque.com).
 * [x] Support Clone Group Repo
 * [x] Add Open in Website Command
 * [x] Add Yuque Arrange TOC Command
+* [ ] Add Command to Switch Active Folder
+* [ ] Add DocumentName in SourceControl
+* [ ] Open Document when click item in SourceControl
 * [ ] Use DB to store all the things
-  * [ ] TOC.yaml is readonly when created
   * [ ] Display The status of Document - use icons
 
 ## How to Use

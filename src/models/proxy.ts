@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { version } from 'os';
 
 export class TOCItem {
     type: string;
@@ -16,23 +15,30 @@ export class TOCItem {
 }
 
 export class YuqueDataProxy {
+    private workspaceFolder: vscode.WorkspaceFolder;
     private workspaceFolderPath: string;
     private TOCPath: string;
     private versionDirectory: string;
 
     constructor() {
         let folders = vscode.workspace.workspaceFolders;
-        if (folders.length === 1) {
-            this.workspaceFolderPath = folders[0].uri.fsPath;
-            this.TOCPath = path.join(this.workspaceFolderPath, 'TOC.yaml');
-            this.versionDirectory = path.join(this.workspaceFolderPath, '.yuque');
-
-            if (!fs.existsSync(this.versionDirectory)) {
-                fs.mkdirSync(this.versionDirectory, {});
+        this.workspaceFolder = folders[0];
+        for (let folder of folders) {
+            let is_active = vscode.workspace.getConfiguration('yuqueCli', folder).get('Active');
+            if (is_active) {
+                this.workspaceFolder = folder;
             }
-        } else {
-            vscode.window.showErrorMessage('YuqueCli is not supported for multiworkspaces');
         }
+        this.workspaceFolderPath = this.workspaceFolder.uri.fsPath;
+        this.TOCPath = path.join(this.workspaceFolderPath, 'TOC.yaml');
+        this.versionDirectory = path.join(this.workspaceFolderPath, '.yuque');
+        if (!fs.existsSync(this.versionDirectory)) {
+            fs.mkdirSync(this.versionDirectory, {});
+        }
+    }
+
+    getWorkspaceFolder() : vscode.WorkspaceFolder {
+        return this.workspaceFolder;
     }
 
     async getTOC(): Promise<TOCItem[]> {

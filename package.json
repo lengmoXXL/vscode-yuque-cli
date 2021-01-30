@@ -79,11 +79,18 @@
 				"properties": {
 					"yuqueCli.APIToken": {
 						"type": "string",
-						"default": "<enter-your-api-token>"
+						"default": "<enter-your-api-token>",
+						"scope": "resource"
 					},
 					"yuqueCli.EndPoint": {
 						"type": "string",
-						"default": "https://www.yuque.com/api/v2/"
+						"default": "https://www.yuque.com/api/v2/",
+						"scope": "resource"
+					},
+					"yuqueCli.Active": {
+						"type": "boolean",
+						"default": true,
+						"scope": "resource"
 					}
 				}
 			}

@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Add Support For Multi Root workspace
+
 ## [0.1.0]
 
 - Add Yuque Clone Command
