@@ -174,7 +174,7 @@
 		"open": "^7.3.0",
 		"mac-open": "^0.1.3"
 	},
-	"icon": "media/icon.jpeg",
+	"icon": "media/icon.png",
 	"bugs": {
 		"url": "https://github.com/lengmoXXL/vscode-yuque-cli/issues",
 		"email": "forlearn_lzy@163.com"
