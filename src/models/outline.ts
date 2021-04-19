@@ -25,6 +25,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
 
     private _repoNamespace: string;
     private _nodes: any;
+    private _idOfNodes: any;
     private _rootNodes: DocumentNode[];
     private _lastClickedNode: DocumentNode;
 
@@ -50,6 +51,10 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         throw new Error("Please click Outline Node first");
     }
 
+    getNodeById(id: number): DocumentNode | undefined {
+        return this._idOfNodes[id];
+    }
+
     getTreeItem(node: DocumentNode): vscode.TreeItem {
         return {
             label: node.label,
@@ -72,6 +77,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
 
     async loadTOC(items: TOCItem[]) {
         this._nodes = {};
+        this._idOfNodes = {};
         this._rootNodes = [];
 
         assert(items !== null);
@@ -90,6 +96,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
 
             let node = new DocumentNode(item.id, item.title, item.url);
             this._nodes[item.uuid] = node;
+            this._idOfNodes[item.id] = node;
 
             if (!('parent_uuid' in item)) {
                 this._rootNodes.push(node);

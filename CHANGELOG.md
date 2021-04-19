@@ -58,3 +58,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Add Support For Multi Root workspace
 - Add Yuque Switch Active Folder Command
 - Fetch Document When Open not exists Document
+
+## [0.3.1]
+
+- Add CodeLens to display title

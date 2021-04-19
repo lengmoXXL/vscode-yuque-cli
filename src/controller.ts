@@ -3,6 +3,7 @@ import { YuqueDataProxy } from './models/proxy';
 import { YuqueOutlineProvider } from './models/outline';
 import { Yuque } from './models/yuque';
 import { SourceControl } from './models/sourceControl';
+import { HeaderCodelens } from './models/codeLens';
 
 
 export class YuqueController {
@@ -10,6 +11,7 @@ export class YuqueController {
     private _yuqueModel: Yuque;
     private _yuqueProxy: YuqueDataProxy;
     private _sourceControl: SourceControl;
+    private _codeLens: HeaderCodelens;
 
     private static _instance: YuqueController | undefined;
 
@@ -31,6 +33,9 @@ export class YuqueController {
         );
 
         vscode.window.registerTreeDataProvider('yuqueOutline', this._yuqueOutlineProvider);
+
+        this._codeLens = new HeaderCodelens(this._yuqueOutlineProvider);
+        vscode.languages.registerCodeLensProvider("*", this._codeLens);
 
         context.subscriptions.push(
             vscode.commands.registerCommand(
