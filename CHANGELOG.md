@@ -62,3 +62,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.3.1]
 
 - Add CodeLens to display title
+
+## [0.3.4]
+
+- Fix Codelens not display title

@@ -17,6 +17,10 @@ class YuqueDocumentCodeLens implements vscode.CodeLens {
 }
 
 export class HeaderCodelens implements vscode.CodeLensProvider {
+
+    private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
+    public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
+
     constructor(private _outline: YuqueOutlineProvider) {
     }
 
@@ -24,8 +28,9 @@ export class HeaderCodelens implements vscode.CodeLensProvider {
         // Fixme 
         let splits = document.fileName.split('/');
         let idString = Number(splits.pop().slice(0, -3));
-        if (idString) {
-            return [new YuqueDocumentCodeLens(this._outline.getNodeById(idString) , document.getWordRangeAtPosition(new vscode.Position(0, 0)))];
+        let node = this._outline.getNodeById(idString);
+        if (node) {
+            return [new YuqueDocumentCodeLens(node, new vscode.Range(0, 0, 1, 1))];
         }
         return [];
     }
