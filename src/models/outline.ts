@@ -4,18 +4,26 @@ import * as fs from 'fs';
 import { assert } from 'console';
 import { TOCItem } from './proxy';
 
-export class DocumentNode {
-
+export class DocumentId {
     public id: number;
     public slug: string;
-    public label: string;
+    public title: string;
+
+    constructor(id?:number, slug?:string, title?:string) {
+        this.id = id;
+        this.slug = slug;
+        this.title = title;
+    }
+}
+
+export class DocumentNode {
+
+    public docid: DocumentId;
     public children: DocumentNode[];
 
     constructor(id: number, label: string, slug: string) {
-        this.id = id;
-        this.label = label;
+        this.docid = new DocumentId(id, slug, label);
         this.children = [];
-        this.slug = slug;
     }
 }
 
@@ -57,7 +65,7 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
 
     getTreeItem(node: DocumentNode): vscode.TreeItem {
         return {
-            label: node.label,
+            label: node.docid.title,
             collapsibleState: node.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
             contextValue: 'document',
             command: {

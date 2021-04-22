@@ -172,7 +172,8 @@
 		"jsonfile": "^6.1.0",
 		"js-yaml": "^3.14.0",
 		"open": "^7.3.0",
-		"mac-open": "^0.1.3"
+		"mac-open": "^0.1.3",
+		"sanitize-filename": "1.6.3"
 	},
 	"icon": "media/icon.png",
 	"bugs": {

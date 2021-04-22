@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import { DocumentId } from './outline';
+import sanitize = require('sanitize-filename');
 
 export class TOCItem {
     type: string;
@@ -67,45 +69,57 @@ export class YuqueDataProxy {
         fs.writeFileSync(this.TOCPath, yaml.safeDump(newTOC), {});
     }
 
-    getDocument(id: number): string {
-        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+    getDocument(docid: DocumentId): string {
+        let docPath = this.getDocumentPath(docid);
         let body = fs.readFileSync(docPath, 'utf-8');
         return body;
     }
 
-    saveDocument(id: number, doc: string) {
-        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+    saveDocument(docid: DocumentId, doc: string) {
+        let docPath = this.getDocumentPath(docid);
         fs.writeFileSync(docPath, doc, {});
     }
 
-    saveVersionDocument(id: number, doc: string) {
+    saveVersionDocument(docid: DocumentId, doc: string) {
         if (!fs.existsSync(this.versionDirectory)) {
             fs.mkdirSync(this.versionDirectory, {});
         }
-        let versionPath = path.join(this.versionDirectory, id.toString() + '.md');
+        let versionPath = this.getVersionPath(docid);
         fs.writeFileSync(versionPath, doc, {});
     }
 
-    deleteDocument(id: number) {
-        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+    deleteDocument(docid: DocumentId) {
+        let docPath = this.getDocumentPath(docid);
         if (fs.existsSync(docPath)) {
             fs.unlinkSync(docPath);
         }
     }
 
-    deleteVersionDocument(id: number) {
-        let versionPath = path.join(this.versionDirectory, id.toString() + '.md');
+    deleteVersionDocument(docid: DocumentId) {
+        let versionPath = this.getVersionPath(docid);
         if (fs.existsSync(versionPath)) {
             fs.unlinkSync(versionPath);
         }
     }
 
-    getUri(id: number) : vscode.Uri {
-        let docPath = path.join(this.workspaceFolderPath, id.toString() + '.md');
+    getUri(docid: DocumentId) : vscode.Uri {
+        let docPath = this.getDocumentPath(docid);
         if (fs.existsSync(docPath)) {
             return vscode.Uri.file(docPath);
         } else {
             throw new Error('Document not fetch');
         }
+    }
+
+    getDocumentPath(docid: DocumentId): string {
+        return path.join(this.workspaceFolderPath, this.getFileName(docid));
+    }
+
+    getVersionPath(docid: DocumentId): string {
+        return path.join(this.versionDirectory, this.getFileName(docid));
+    }
+
+    getFileName(docid: DocumentId): string {
+        return "[" + docid.id.toString() + "]" + sanitize(docid.title) + ".md";
     }
 }

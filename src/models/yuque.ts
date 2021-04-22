@@ -5,6 +5,7 @@ import * as open_darwin from 'mac-open';
 import * as YuqueSDK from '@yuque/sdk';
 import { YuqueDataProxy } from "./proxy";
 import { assert } from 'console';
+import { DocumentId } from './outline';
 
 
 // decide what os should be used
@@ -54,9 +55,9 @@ export class Yuque {
         return await this.updateOrCreateTOC(choice.namespace);
     }
 
-    async fetchDocument(namespace: string, id: number) {
+    async fetchDocument(namespace: string, docid: DocumentId) {
         let document: any = await this.SDKClient.docs.get(
-            {namespace: namespace, slug: id, data: {raw: 1}});
+            {namespace: namespace, slug: docid.id, data: {raw: 1}});
         let documentBody = document.body;
         return documentBody;
     }
@@ -88,10 +89,10 @@ export class Yuque {
         }
     }
 
-    async updateDocument(namespace: string, id: number, body: string) {
+    async updateDocument(namespace: string, docid: DocumentId, body: string) {
         return await this.SDKClient.docs.update({
             namespace: namespace,
-            id: id,
+            id: docid.id,
             data: {
                 body: body
             }
@@ -116,10 +117,10 @@ export class Yuque {
         }
     }
 
-    async deleteDocument(namespace: string, id: number) {
+    async deleteDocument(namespace: string, docid: DocumentId) {
         await this.SDKClient.docs.delete({
             namespace: namespace,
-            id: id
+            id: docid.id
         });
     }
 

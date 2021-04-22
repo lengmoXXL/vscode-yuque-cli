@@ -66,3 +66,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.3.4]
 
 - Fix Codelens not display title
+
+## [0.3.5]
+
+- Remove Codelens and change filename format
