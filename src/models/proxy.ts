@@ -122,4 +122,8 @@ export class YuqueDataProxy {
     getFileName(docid: DocumentId): string {
         return "[" + docid.id.toString() + "]" + sanitize(docid.title) + ".md";
     }
+
+    getVersionUriByUri(uri: vscode.Uri): vscode.Uri {
+        return vscode.Uri.file(path.join(this.versionDirectory, path.basename(uri.fsPath)));
+    }
 }

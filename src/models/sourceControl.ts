@@ -107,7 +107,16 @@ export class SourceControl {
 			decorations: {
 				strikeThrough: deleted,
 				tooltip: 'File was locally deleted.'
-			}
+			},
+            command: !deleted
+                ? {
+                    title: "Show changes",
+                    command: "vscode.diff",
+                    arguments: [this.proxy.getVersionUriByUri(docUri), docUri, `Local changes`],
+                    tooltip: "Diff your changes"
+                }
+                : null,
+            contextValue: "yuqueCli.SCM"
 		};
 
 		return resourceState;
