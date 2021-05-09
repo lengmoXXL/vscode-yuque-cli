@@ -67,6 +67,14 @@
 			{
 				"command": "yuqueCli.switchActiveFolder",
 				"title": "Yuque: Switch Active Folder"
+			},
+			{
+				"command": "yuqueCli.updateDocumentByStates",
+				"title": "Yuque: Update Document By States",
+				"icon": {
+					"dark": "resources/dark/refresh.svg",
+					"light": "resources/light/refresh.svg"
+				}
 			}
 		],
 		"views": {
@@ -142,6 +150,39 @@
 				{
 					"command": "yuqueCli.openInWebsite",
 					"when": "view == yuqueOutline && viewItem == document"
+				}
+			],
+			"scm/resourceState/context": [
+				{
+					"command": "yuqueCli.updateDocumentByStates",
+					"when": "scmProvider == yuque",
+					"group": "inline"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "yuqueCli.updateDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.fetchDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.openDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.deleteDocument",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.openInWebsite",
+					"when": "view == yuqueOutline && viewItem == document"
+				},
+				{
+					"command": "yuqueCli.updateDocumentByStates",
+					"when": "scmProvider == yuque"
 				}
 			]
 		}

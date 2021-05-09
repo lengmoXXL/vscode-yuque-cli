@@ -93,6 +93,15 @@ export class YuqueController {
         );
 
         context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'yuqueCli.updateDocumentByStates',
+                async (...states: vscode.SourceControlResourceState[]) => this.updateDocumentByUri(states).then(
+                    () => this._sourceControl.tryUpdateChangedGroup()
+                )
+            )
+        );
+
+        context.subscriptions.push(
             vscode.commands.registerCommand('yuqueCli.createDocument',
                 () => this._yuqueModel.createDocument(this._yuqueOutlineProvider.namespace())
             )
@@ -168,6 +177,29 @@ export class YuqueController {
                 this._yuqueProxy.saveVersionDocument(node.docid, ret.body);
             }
             vscode.window.showInformationMessage(`Update ${node.docid.title} successfully`);
+        } catch (e) {
+            vscode.window.showErrorMessage(e.toString());
+        }
+    }
+
+    async updateDocumentByUri(resourceStates: vscode.SourceControlResourceState[]) {
+        try {
+            for (let state of resourceStates) {
+                let uri = state.resourceUri;
+                let node = this._yuqueOutlineProvider.getNodeByUri(uri);
+                if (!node) {
+                    vscode.window.showErrorMessage(`${uri.fsPath} is not found`);
+                    return;
+                }
+
+                let namespace = this._yuqueOutlineProvider.namespace();
+                let documentBody = this._yuqueProxy.getDocument(node.docid);
+                let ret = await this._yuqueModel.updateDocument(namespace, node.docid, documentBody);
+                if ('body' in ret) {
+                    this._yuqueProxy.saveVersionDocument(node.docid, ret.body);
+                }
+                vscode.window.showInformationMessage(`Update ${node.docid.title} successfully`);
+            }
         } catch (e) {
             vscode.window.showErrorMessage(e.toString());
         }

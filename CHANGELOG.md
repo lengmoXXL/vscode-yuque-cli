@@ -70,3 +70,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.3.5]
 
 - Remove Codelens and change filename format
+
+## [0.3.8]
+
+- Add open diff for click scm state
+- Add update document for scm state menu
+- Conceal commands that is not used in command paleltte

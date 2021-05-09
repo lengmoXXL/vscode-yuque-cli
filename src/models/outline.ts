@@ -63,6 +63,18 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         return this._idOfNodes[id];
     }
 
+    getNodeByUri(uri: vscode.Uri): DocumentNode | undefined {
+        let filename = path.basename(uri.fsPath);
+        let results = /\[(\d+)\].*/.exec(filename);
+        console.log(results);
+        if (results.length <= 1) {
+            return undefined;
+        }
+
+        let id = Number.parseInt(results[1]);
+        return this.getNodeById(id);
+    }
+
     getTreeItem(node: DocumentNode): vscode.TreeItem {
         return {
             label: node.docid.title,
