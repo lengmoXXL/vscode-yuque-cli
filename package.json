@@ -137,23 +137,23 @@
 			"view/item/context": [
 				{
 					"command": "yuqueCli.updateDocument",
-					"when": "view == yuqueOutline && viewItem == document"
+					"when": "viewItem == yuqueDocument"
 				},
 				{
 					"command": "yuqueCli.fetchDocument",
-					"when": "view == yuqueOutline && viewItem == document"
+					"when": "viewItem == yuqueDocument"
 				},
 				{
 					"command": "yuqueCli.openDocument",
-					"when": "view == yuqueOutline && viewItem == document"
+					"when": "viewItem == yuqueDocument"
 				},
 				{
 					"command": "yuqueCli.deleteDocument",
-					"when": "view == yuqueOutline && viewItem == document"
+					"when": "viewItem == yuqueDocument"
 				},
 				{
 					"command": "yuqueCli.openInWebsite",
-					"when": "view == yuqueOutline && viewItem == document"
+					"when": "viewItem == yuqueDocument"
 				}
 			],
 			"scm/resourceState/context": [

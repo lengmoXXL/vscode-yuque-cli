@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TOCItem } from './proxy';
+import { TOCItem } from './define';
 
 export class YuqueInboxProvider implements vscode.TreeDataProvider<Number> {
     private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
@@ -37,6 +37,7 @@ export class YuqueInboxProvider implements vscode.TreeDataProvider<Number> {
         const document = this._idOfDocumentsNotInTOC.get(id);
         return {
             label: document.title,
+            contextValue: "yuqueDocument",
         };
     }
 

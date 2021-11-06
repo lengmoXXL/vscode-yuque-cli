@@ -2,39 +2,17 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { assert } from 'console';
-import { TOCItem } from './proxy';
+import { TOCItem, DocumentId } from './define';
 
-export class DocumentId {
-    public id: number;
-    public slug: string;
-    public title: string;
 
-    constructor(id?:number, slug?:string, title?:string) {
-        this.id = id;
-        this.slug = slug;
-        this.title = title;
-    }
-}
-
-export class DocumentNode {
-
-    public docid: DocumentId;
-    public children: DocumentNode[];
-
-    constructor(id: number, label: string, slug: string) {
-        this.docid = new DocumentId(id, slug, label);
-        this.children = [];
-    }
-}
-
-export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNode> {
+export class YuqueOutlineProvider implements vscode.TreeDataProvider<Number> {
 	private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
 	readonly onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event;
 
     private _repoNamespace: string;
-    private _nodes: any;
-    private _idOfNodes: any;
-    private _rootNodes: DocumentNode[];
+    private _childrenOfId: Map<Number, Number[]>;
+    private _rootNode: Number[];
+    private _idOfNode: Map<Number, DocumentId>;
 
     constructor(private context: vscode.ExtensionContext, items?: TOCItem[]) {
         if (items !== undefined) {
@@ -42,41 +20,34 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
         }
     }
 
-    getNodeById(id: number): DocumentNode | undefined {
-        return this._idOfNodes[id];
+    getNodeById(id: Number): DocumentId | undefined {
+        return this._idOfNode.get(id);
     }
 
-    getNodeByUri(uri: vscode.Uri): DocumentNode | undefined {
-        let filename = path.basename(uri.fsPath);
-        let results = /\[(\d+)\].*/.exec(filename);
-        console.log(results);
-        if (results.length <= 1) {
-            return undefined;
-        }
-
-        let id = Number.parseInt(results[1]);
-        return this.getNodeById(id);
-    }
-
-    getTreeItem(node: DocumentNode): vscode.TreeItem {
+    getTreeItem(did: Number): vscode.TreeItem {
+        let document = this._idOfNode.get(did);
+        let children = this._childrenOfId.get(did) || [];
         return {
-            label: node.docid.title,
-            collapsibleState: node.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
-            contextValue: 'document',
+            label: document.title,
+            collapsibleState: children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
+            contextValue: 'yuqueDocument',
         };
     }
 
-    getChildren(node?: DocumentNode): Thenable<DocumentNode[]> {
-        if (node) {
-            return Promise.resolve(node.children);
+    getChildren(did?: Number): Thenable<Number[]> {
+        let children = this._childrenOfId.get(did) || [];
+        if (did) {
+            return Promise.resolve(children);
         }
-        return Promise.resolve(this._rootNodes);
+        return Promise.resolve(this._rootNode);
     }
 
     async loadTOC(items: TOCItem[]) {
-        this._nodes = {};
-        this._idOfNodes = {};
-        this._rootNodes = [];
+        this._childrenOfId = new Map<Number, Number[]>();
+        this._rootNode = [];
+        this._idOfNode = new Map<Number, DocumentId>();
+
+        let idOfUuid = new Map<String, Number>();
 
         assert(items !== null);
         // console.log(items);
@@ -92,20 +63,24 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
                 continue;
             }
 
-            let node = new DocumentNode(item.id, item.title, item.url);
-            this._nodes[item.uuid] = node;
-            this._idOfNodes[item.id] = node;
+            let documentId = new DocumentId(item.id, item.slug, item.title);
+            this._idOfNode.set(item.id, documentId);
+            idOfUuid.set(item.uuid, item.id);
 
             if (!('parent_uuid' in item)) {
-                this._rootNodes.push(node);
+                this._rootNode.push(item.id);
                 continue;
             }
 
             if (item.parent_uuid.length === 0) {
-                this._rootNodes.push(node);
+                this._rootNode.push(item.id);
             } else {
-                let parentNode: DocumentNode = this._nodes[item.parent_uuid];
-                parentNode.children.push(node);
+                let parentId = idOfUuid.get(item.parent_uuid);
+                if (!this._childrenOfId.has(parentId)) {
+                    this._childrenOfId.set(parentId, [item.id]);
+                } else {
+                    this._childrenOfId.get(parentId).push(item.id);
+                }
             }
         }
         this._onDidChangeTreeData.fire(undefined);

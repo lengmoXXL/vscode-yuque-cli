@@ -5,7 +5,7 @@ import * as open_darwin from 'mac-open';
 import * as YuqueSDK from '@yuque/sdk';
 import { YuqueDataProxy } from "./proxy";
 import { assert } from 'console';
-import { DocumentId } from './outline';
+import { DocumentId } from './define';
 
 
 // decide what os should be used
@@ -57,9 +57,9 @@ export class Yuque {
         return await this.updateOrCreateTOC(choice.namespace);
     }
 
-    async fetchDocument(namespace: string, docid: DocumentId) {
+    async fetchDocument(namespace: string, did: Number) {
         let document: any = await this.SDKClient.docs.get(
-            {namespace: namespace, slug: docid.id, data: {raw: 1}});
+            {namespace: namespace, slug: did, data: {raw: 1}});
         let documentBody = document.body;
         return documentBody;
     }
@@ -77,7 +77,6 @@ export class Yuque {
                 }
             });
             if (res) {
-                await vscode.window.showInformationMessage('Create Success, Please insert the document into the TOC');
                 let url = `https://www.yuque.com/${namespace}/toc`;
                 if (platform === 'darwin') {
                     open_darwin(url);
@@ -92,18 +91,18 @@ export class Yuque {
         }
     }
 
-    async updateDocument(namespace: string, docid: DocumentId, body: string) {
+    async updateDocument(namespace: string, did: Number, body: string) {
         return await this.SDKClient.docs.update({
             namespace: namespace,
-            id: docid.id,
+            id: did,
             data: {
                 body: body
             }
         });
     }
 
-    async openDocumentInWebsite(namespace: string, slug: string) {
-        let url = `https://www.yuque.com/${namespace}/${slug}`;
+    async openDocumentInWebsite(namespace: string, did: Number) {
+        let url = `https://www.yuque.com/${namespace}/${did}`;
         if (platform === 'darwin') {
             open_darwin(url);
         } else {
@@ -120,10 +119,10 @@ export class Yuque {
         }
     }
 
-    async deleteDocument(namespace: string, docid: DocumentId) {
+    async deleteDocument(namespace: string, did: Number) {
         await this.SDKClient.docs.delete({
             namespace: namespace,
-            id: docid.id
+            id: did
         });
         this.listAndFireDocuments(namespace);
     }

@@ -2,19 +2,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { DocumentId } from './outline';
+import { TOCItem, DocumentId } from './define';
 import sanitize = require('sanitize-filename');
 
-export class TOCItem {
-    type: string;
-    namespace?: string;
-    title?:string;
-    id?: number;
-    url?: string;
-    uuid?: string;
-    child_uuid?: string;
-    parent_uuid?: string;
-}
 
 export class YuqueDataProxy {
     private workspaceFolder: vscode.WorkspaceFolder;
@@ -125,5 +115,16 @@ export class YuqueDataProxy {
 
     getVersionUriByUri(uri: vscode.Uri): vscode.Uri {
         return vscode.Uri.file(path.join(this.versionDirectory, path.basename(uri.fsPath)));
+    }
+
+    getDocumentIdByUri(uri: vscode.Uri): Number {
+        let filename = path.basename(uri.fsPath);
+        let results = /\[(\d+)\].*/.exec(filename);
+        console.log(results);
+        if (results.length <= 1) {
+            return undefined;
+        }
+
+        return Number.parseInt(results[1]);
     }
 }
