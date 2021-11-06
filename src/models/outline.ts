@@ -35,28 +35,11 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
     private _nodes: any;
     private _idOfNodes: any;
     private _rootNodes: DocumentNode[];
-    private _lastClickedNode: DocumentNode;
 
     constructor(private context: vscode.ExtensionContext, items?: TOCItem[]) {
-        context.subscriptions.push(
-            vscode.commands.registerCommand('yuqueCli.onDocumentClicked',
-                (node: DocumentNode) => this.onYuqueDocumentClicked(node))
-        );
-
         if (items !== undefined) {
             this.loadTOC(items);
         }
-    }
-
-    onYuqueDocumentClicked(node: DocumentNode): void {
-        this._lastClickedNode = node;
-    }
-
-    getLastClickedNode(): DocumentNode {
-        if (this._lastClickedNode) {
-            return this._lastClickedNode;
-        }
-        throw new Error("Please click Outline Node first");
     }
 
     getNodeById(id: number): DocumentNode | undefined {
@@ -80,11 +63,6 @@ export class YuqueOutlineProvider implements vscode.TreeDataProvider<DocumentNod
             label: node.docid.title,
             collapsibleState: node.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
             contextValue: 'document',
-            command: {
-                command: 'yuqueCli.onDocumentClicked',
-                title: '',
-                arguments: [node]
-            }
         };
     }
 

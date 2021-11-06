@@ -6,6 +6,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+* [ ] Add Automatic Tests for Yuque
+* [ ] Test Yuque API
+* [ ] Refractor
+* [ ] Support Modify TOC
+
 ## [0.1.0]
 
 - Add Yuque Clone Command

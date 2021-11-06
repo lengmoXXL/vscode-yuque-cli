@@ -82,6 +82,10 @@
 				{
 					"id": "yuqueOutline",
 					"name": "Yuque Outline"
+				},
+				{
+					"id": "yuqueInbox",
+					"name": "Yuque Inbox"
 				}
 			]
 		},

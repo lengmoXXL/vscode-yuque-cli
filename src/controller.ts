@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { YuqueDataProxy } from './models/proxy';
-import { YuqueOutlineProvider } from './models/outline';
+import { DocumentNode, YuqueOutlineProvider } from './models/outline';
 import { Yuque } from './models/yuque';
 import { SourceControl } from './models/sourceControl';
+import { YuqueInboxProvider } from './models/inbox';
 
 
 export class YuqueController {
@@ -10,6 +11,7 @@ export class YuqueController {
     private _yuqueModel: Yuque;
     private _yuqueProxy: YuqueDataProxy;
     private _sourceControl: SourceControl;
+    private _yuqueInboxProvider: YuqueInboxProvider;
 
     private static _instance: YuqueController | undefined;
 
@@ -26,16 +28,24 @@ export class YuqueController {
         this._sourceControl = new SourceControl(context, this._yuqueProxy);
         this._yuqueModel = new Yuque(this._yuqueProxy);
 
+        this._yuqueInboxProvider = new YuqueInboxProvider();
+        this._yuqueModel.subscribeDocumentsChanges(event => this._yuqueInboxProvider.loadDocuments(event));
+
         this._yuqueProxy.getTOC().then(
-            items => this._yuqueOutlineProvider.loadTOC(items)
+            items => {
+                this._yuqueOutlineProvider.loadTOC(items);
+                this._yuqueInboxProvider.loadTOC(items);
+                this._yuqueModel.listAndFireDocuments(this._yuqueOutlineProvider.namespace());
+            }
         );
 
         vscode.window.registerTreeDataProvider('yuqueOutline', this._yuqueOutlineProvider);
+        vscode.window.createTreeView('yuqueInbox', {
+            treeDataProvider: this._yuqueInboxProvider, 
+        });
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                'yuqueCli.reloadTOC',
-                () => this.refreshTOC()
+            vscode.commands.registerCommand( 'yuqueCli.reloadTOC', () => this.refreshTOC()
             )
         );
 
@@ -73,20 +83,20 @@ export class YuqueController {
         context.subscriptions.push(
             vscode.commands.registerCommand(
                 'yuqueCli.fetchDocument',
-                () => this.fetchDocument()
+                (node: DocumentNode) => this.fetchDocument(node)
             )
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand('yuqueCli.openDocument',
-                () => this.openDocument()
+                (node: DocumentNode) => this.openDocument(node)
             )
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand(
                 'yuqueCli.updateDocument',
-                () => this.updateDocument().then(
+                (node: DocumentNode) => this.updateDocument(node).then(
                     () => this._sourceControl.tryUpdateChangedGroup()
                 )
             )
@@ -109,8 +119,8 @@ export class YuqueController {
 
         context.subscriptions.push(
             vscode.commands.registerCommand('yuqueCli.deleteDocument',
-                async () => {
-                    this.deleteDocument().then(
+                async (node: DocumentNode) => {
+                    this.deleteDocument(node).then(
                         () => this.updateTOC()
                     ).then(
                         () => this.refreshTOC()
@@ -121,9 +131,8 @@ export class YuqueController {
         
         context.subscriptions.push(
             vscode.commands.registerCommand('yuqueCli.openInWebsite',
-                async () => {
+                async (node: DocumentNode) => {
                     try {
-                        let node = this._yuqueOutlineProvider.getLastClickedNode();
                         let namespace = this._yuqueOutlineProvider.namespace();
                         await this._yuqueModel.openDocumentInWebsite(namespace, node.docid.slug);
                     } catch (e) {
@@ -150,13 +159,15 @@ export class YuqueController {
 
     async refreshTOC() {
         await this._yuqueProxy.getTOC().then(
-            items => this._yuqueOutlineProvider.loadTOC(items)
+            items => {
+                this._yuqueOutlineProvider.loadTOC(items);
+                this._yuqueInboxProvider.loadTOC(items);
+            }
         );
     }
 
-    async fetchDocument() {
+    async fetchDocument(node: DocumentNode) {
         try {
-            let node = this._yuqueOutlineProvider.getLastClickedNode();
             let namespace = this._yuqueOutlineProvider.namespace();
             let documentBody = await this._yuqueModel.fetchDocument(namespace, node.docid);
             this._yuqueProxy.saveDocument(node.docid, documentBody);
@@ -167,9 +178,8 @@ export class YuqueController {
         }
     }
 
-    async updateDocument() {
+    async updateDocument(node: DocumentNode) {
         try {
-            let node = this._yuqueOutlineProvider.getLastClickedNode();
             let namespace = this._yuqueOutlineProvider.namespace();
             let documentBody = this._yuqueProxy.getDocument(node.docid);
             let ret = await this._yuqueModel.updateDocument(namespace, node.docid, documentBody);
@@ -205,14 +215,13 @@ export class YuqueController {
         }
     }
 
-    async openDocument() {
+    async openDocument(node: DocumentNode) {
         try {
-            let node = this._yuqueOutlineProvider.getLastClickedNode();
             let uri = null;
             try {
                 uri = this._yuqueProxy.getUri(node.docid);
             } catch (e) {
-                await this.fetchDocument();
+                await this.fetchDocument(node);
                 uri = this._yuqueProxy.getUri(node.docid);
             }
             await vscode.workspace.openTextDocument(uri).then(document => vscode.window.showTextDocument(document));
@@ -221,9 +230,8 @@ export class YuqueController {
         }
     }
 
-    async deleteDocument() {
+    async deleteDocument(node: DocumentNode) {
         try {
-            let node = this._yuqueOutlineProvider.getLastClickedNode();
             await this._yuqueModel.deleteDocument(this._yuqueOutlineProvider.namespace(), node.docid).then(
                 () => vscode.window.showInformationMessage(`Delete ${node.docid.title} successfully`)
             );
@@ -250,7 +258,10 @@ export class YuqueController {
             this._yuqueModel.activate();
 
             this._yuqueProxy.getTOC().then(
-                items => this._yuqueOutlineProvider.loadTOC(items)
+                items => {
+                    this._yuqueOutlineProvider.loadTOC(items);
+                    this._yuqueInboxProvider.loadTOC(items);
+                }
             );
         }
     }

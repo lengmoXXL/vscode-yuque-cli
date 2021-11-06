@@ -14,8 +14,10 @@ const platform = process.platform;
 
 export class Yuque {
     private SDKClient: any;
+    private onYuqueDocumentsChanges: vscode.EventEmitter<any[]>;
 
     constructor(private proxy: YuqueDataProxy) {
+        this.onYuqueDocumentsChanges = new vscode.EventEmitter<any>();
         this.activate();
     }
 
@@ -83,6 +85,7 @@ export class Yuque {
                 else {
                     open(url);
                 }
+                this.listAndFireDocuments(namespace);
             }
         } else {
             throw new Error('Title must not be null');
@@ -122,6 +125,7 @@ export class Yuque {
             namespace: namespace,
             id: docid.id
         });
+        this.listAndFireDocuments(namespace);
     }
 
     async updateOrCreateTOC(namespace: string) {
@@ -133,6 +137,17 @@ export class Yuque {
             assert(tocVal[0].type === 'META');
             tocVal[0].namespace = namespace;
         }
+
+        this.listAndFireDocuments(namespace);
         return tocVal;
+    }
+
+    subscribeDocumentsChanges(fn) {
+        this.onYuqueDocumentsChanges.event(fn);
+    }
+
+    async listAndFireDocuments(namespace: string) {
+         let documents = await this.SDKClient.docs.list({namespace: namespace});
+         this.onYuqueDocumentsChanges.fire(documents);
     }
 }
