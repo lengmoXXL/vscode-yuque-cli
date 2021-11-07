@@ -210,6 +210,9 @@ export class YuqueController {
     async fetchDocument(did: Number) {
         try {
             let document = this._yuqueOutlineProvider.getNodeById(did);
+            if (!document) {
+                document = this._yuqueInboxProvider.getNodeById(did);
+            }
             let namespace = this._yuqueOutlineProvider.namespace();
             let documentBody = await this._yuqueModel.fetchDocument(namespace, did);
             this._yuqueProxy.saveDocument(document, documentBody);
@@ -222,6 +225,9 @@ export class YuqueController {
     async updateDocument(did: Number) {
         try {
             let document = this._yuqueOutlineProvider.getNodeById(did);
+            if (!document) {
+                document = this._yuqueInboxProvider.getNodeById(did);
+            }
             let namespace = this._yuqueOutlineProvider.namespace();
             let documentBody = this._yuqueProxy.getDocument(document);
             let ret = await this._yuqueModel.updateDocument(namespace, did, documentBody);
@@ -239,6 +245,9 @@ export class YuqueController {
                 let uri = state.resourceUri;
                 let did = this._yuqueProxy.getDocumentIdByUri(uri);
                 let document = this._yuqueOutlineProvider.getNodeById(did);
+                if (!document) {
+                    document = this._yuqueInboxProvider.getNodeById(did);
+                }
                 if (!document) {
                     vscode.window.showErrorMessage(`${uri.fsPath} is not found`);
                     return;
@@ -259,6 +268,9 @@ export class YuqueController {
     async openDocument(did: Number) {
         try {
             let document = this._yuqueOutlineProvider.getNodeById(did);
+            if (!document) {
+                document = this._yuqueInboxProvider.getNodeById(did);
+            }
             let uri = null;
             try {
                 uri = this._yuqueProxy.getUri(document);
@@ -275,6 +287,9 @@ export class YuqueController {
     async deleteDocument(did: Number) {
         try {
             let document = this._yuqueOutlineProvider.getNodeById(did);
+            if (!document) {
+                document = this._yuqueInboxProvider.getNodeById(did);
+            }
             await this._yuqueModel.deleteDocument(this._yuqueOutlineProvider.namespace(), did);
             this._yuqueProxy.deleteDocument(document);
             this._yuqueProxy.deleteVersionDocument(document);
