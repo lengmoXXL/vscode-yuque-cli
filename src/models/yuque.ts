@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as yaml from 'js-yaml';
 import * as open from 'open';
 import * as open_darwin from 'mac-open';
-import * as YuqueSDK from '@yuque/sdk';
+import * as YuqueSDK from 'yuque-sdk';
 import { YuqueDataProxy } from "./proxy";
 import { assert } from 'console';
 import { DocumentId } from './define';
