@@ -154,6 +154,48 @@ export class YuqueController {
                 async() => this.switchActivateFolder()
             )
         );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'yuqueCli.insertTOC',
+                async (targetDid?: Number) => {
+                    let group = [];
+                    for (let [did, document] of this._yuqueInboxProvider.getInboxDocuments()) {
+                        group.push({
+                            label: document.title,
+                            document: document,
+                        });
+                    }
+                    let choice = await vscode.window.showQuickPick(group);
+                    if (choice) {
+                        let toc;
+                        if (targetDid) {
+                            let target = this._yuqueOutlineProvider.getNodeById(targetDid);
+                            toc = await this._yuqueModel.insertTOCAsChildOfTarget(
+                                this._yuqueOutlineProvider.namespace(), target, choice.document);
+                        } else {
+                            toc = await this._yuqueModel.insertTOC(
+                                this._yuqueOutlineProvider.namespace(), choice.document);
+                        }
+                        this._yuqueProxy.saveTOC(toc);
+                        this.refreshTOC();
+                    }
+                }
+            )
+        );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'yuqueCli.removeTOC',
+                async (did: Number) => {
+                    let document = this._yuqueOutlineProvider.getNodeById(did);
+                    let toc = await this._yuqueModel.removeTOC(
+                        this._yuqueOutlineProvider.namespace(), document);
+                    this._yuqueProxy.saveTOC(toc);
+                    this.refreshTOC();
+                }
+            )
+        );
     }
 
     async refreshTOC() {

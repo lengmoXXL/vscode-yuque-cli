@@ -77,13 +77,6 @@ export class Yuque {
                 }
             });
             if (res) {
-                let url = `https://www.yuque.com/${namespace}/toc`;
-                if (platform === 'darwin') {
-                    open_darwin(url);
-                }
-                else {
-                    open(url);
-                }
                 this.listAndFireDocuments(namespace);
             }
         } else {
@@ -148,5 +141,46 @@ export class Yuque {
     async listAndFireDocuments(namespace: string) {
          let documents = await this.SDKClient.docs.list({namespace: namespace});
          this.onYuqueDocumentsChanges.fire(documents);
+    }
+
+    async insertTOCAsChildOfTarget(namespace: String, target: DocumentId, document: DocumentId) {
+        let toc: any[] = await this.SDKClient.repos.updateTOC( {
+            namespace: namespace,
+            data: {
+                action: 'insert',
+                target_uuid: target.uuid,
+                title: document.title,
+                doc_id: document.id,
+                url: document.slug
+            }
+        } );
+        toc.unshift({type: 'META', namespace: namespace});
+        return toc;
+    }
+
+    async insertTOC(namespace: String, document: DocumentId) {
+        let toc: any[] = await this.SDKClient.repos.updateTOC( {
+            namespace: namespace,
+            data: {
+                action: 'insert',
+                title: document.title,
+                doc_id: document.id,
+                url: document.slug
+            }
+        } );
+        toc.unshift({type: 'META', namespace: namespace});
+        return toc;
+    }
+
+    async removeTOC(namespace: String, document: DocumentId) {
+        let toc: any[] = await this.SDKClient.repos.updateTOC( {
+            namespace: namespace,
+            data: {
+                action: 'removeWithChildren',
+                node_uuid: document.uuid
+            }
+        } );
+        toc.unshift({type: 'META', namespace: namespace});
+        return toc;
     }
 }

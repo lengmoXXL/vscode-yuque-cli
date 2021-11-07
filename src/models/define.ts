@@ -14,10 +14,12 @@ export class DocumentId {
     public id: number;
     public slug: string;
     public title: string;
+    public uuid: string;
 
-    constructor(id?:number, slug?:string, title?:string) {
+    constructor(id?:number, slug?:string, title?:string, uuid?:string) {
         this.id = id;
         this.slug = slug;
         this.title = title;
+        this.uuid = uuid;
     }
 }

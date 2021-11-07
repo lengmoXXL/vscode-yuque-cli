@@ -4,28 +4,45 @@ import { TOCItem } from './define';
 export class YuqueInboxProvider implements vscode.TreeDataProvider<Number> {
     private _onDidChangeTreeData: vscode.EventEmitter<any> = new vscode.EventEmitter<any>();
     private _idOfDocumentsInTOC: Set<Number>;
-    private _idOfDocumentsNotInTOC: Map<Number, any>;
+    private _idOfDocuments: Map<Number, any>;
+    private _idOfDocumentsInBox: Map<Number, any>;
 
 	readonly onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event;
 
     constructor() {
         this._idOfDocumentsInTOC = new Set<Number>();
-        this._idOfDocumentsNotInTOC = new Map<Number, any>();
+        this._idOfDocumentsInBox = new Map<Number, any>();
+        this._idOfDocuments = new Map<Number, any>();
     }
 
     loadTOC(items: TOCItem[]) {
+        this._idOfDocumentsInTOC.clear();
         for (let item of items) {
             if ('id' in item) {
                 this._idOfDocumentsInTOC.add(item.id);
             }
         }
+        this._diff();
     }
 
     loadDocuments(items: any) {
-        this._idOfDocumentsNotInTOC.clear();
+        this._idOfDocuments.clear();
         for (let item of items) {
-            if (!this._idOfDocumentsInTOC.has(item.id)) {
-                this._idOfDocumentsNotInTOC.set(item.id, item);
+            this._idOfDocuments.set(item.id, item);
+        }
+
+        this._diff();
+    }
+
+    getInboxDocuments(): Map<Number, any> {
+        return this._idOfDocumentsInBox;
+    }
+
+    _diff() {
+        this._idOfDocumentsInBox.clear();
+        for (let [did, document] of this._idOfDocuments) {
+            if (!this._idOfDocumentsInTOC.has(did)) {
+                this._idOfDocumentsInBox.set(did, document);
             }
         }
 
@@ -34,7 +51,7 @@ export class YuqueInboxProvider implements vscode.TreeDataProvider<Number> {
 
     // TreeDataProvider
     getTreeItem(id: Number): vscode.TreeItem | Thenable<vscode.TreeItem> {
-        const document = this._idOfDocumentsNotInTOC.get(id);
+        const document = this._idOfDocumentsInBox.get(id);
         return {
             label: document.title,
             contextValue: "yuqueDocument",
@@ -44,7 +61,7 @@ export class YuqueInboxProvider implements vscode.TreeDataProvider<Number> {
     getChildren(id?: Number): vscode.ProviderResult<Number[]> {
         if (!id) {
             let ret = [];
-            for (let [id, document] of this._idOfDocumentsNotInTOC) {
+            for (let [id, document] of this._idOfDocumentsInBox) {
                 ret.push(id);
             }
             return ret;

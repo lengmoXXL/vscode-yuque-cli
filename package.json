@@ -75,6 +75,14 @@
 					"dark": "resources/dark/refresh.svg",
 					"light": "resources/light/refresh.svg"
 				}
+			},
+			{
+				"command": "yuqueCli.insertTOC",
+				"title": "Yuque: Insert Inbox Document Into TOC(root or child of selected)"
+			},
+			{
+				"command": "yuqueCli.removeTOC",
+				"title": "Yuque: Move TOC Document Into InBox"
 			}
 		],
 		"views": {
@@ -132,6 +140,10 @@
 				{
 					"command": "yuqueCli.switchActiveFolder",
 					"when": "view == yuqueOutline"
+				},
+				{
+					"command": "yuqueCli.insertTOC",
+					"when": "view == yuqueInbox"
 				}
 			],
 			"view/item/context": [
@@ -154,6 +166,14 @@
 				{
 					"command": "yuqueCli.openInWebsite",
 					"when": "viewItem == yuqueDocument"
+				},
+				{
+					"command": "yuqueCli.insertTOC",
+					"when": "view == yuqueOutline && viewItem == yuqueDocument"
+				},
+				{
+					"command": "yuqueCli.removeTOC",
+					"when": "view == yuqueOutline && viewItem == yuqueDocument"
 				}
 			],
 			"scm/resourceState/context": [
@@ -161,32 +181,6 @@
 					"command": "yuqueCli.updateDocumentByStates",
 					"when": "scmProvider == yuque",
 					"group": "inline"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "yuqueCli.updateDocument",
-					"when": "view == yuqueOutline && viewItem == document"
-				},
-				{
-					"command": "yuqueCli.fetchDocument",
-					"when": "view == yuqueOutline && viewItem == document"
-				},
-				{
-					"command": "yuqueCli.openDocument",
-					"when": "view == yuqueOutline && viewItem == document"
-				},
-				{
-					"command": "yuqueCli.deleteDocument",
-					"when": "view == yuqueOutline && viewItem == document"
-				},
-				{
-					"command": "yuqueCli.openInWebsite",
-					"when": "view == yuqueOutline && viewItem == document"
-				},
-				{
-					"command": "yuqueCli.updateDocumentByStates",
-					"when": "scmProvider == yuque"
 				}
 			]
 		}
